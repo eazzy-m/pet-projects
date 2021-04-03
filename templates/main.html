@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        {% load bootstrap3 %}
+    <script src="{% bootstrap_jquery_url %}"></script>
+    {% bootstrap_javascript %}
+    {% bootstrap_css %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+    <title>
+        {% block title%}
+        z06_Onliner
+        {% endblock %}
+    </title>
+</head>
+<body>
+<div style="font-size: 16px;  line-height: 1.42857143;">
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #eabc34;">
+    <div class="container-fluid">
+
+        <a class="nav-link active" href="#" style="text-decoration: none; color: #020000">Каталог</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Новости</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Автобарахолка</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Дома и квартиры</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Услуги</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Барахолка</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Форум</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"
+                       style="text-decoration: none; color: #020000"></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" style="text-decoration: none; color: #020000"></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" style="text-decoration: none; color: #020000"></a>
+                </li>
+            </ul>
+            <form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="поиск" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Поиск</button>
+            </form>
+        </div>
+
+    </div>
+</nav>
+<style>
+    a:link {
+        padding: 2px; /* Поля вокруг текста */
+    }
+
+    .btn-round {
+        border-radius: 5px; /* Радиус скругления */
+    }
+</style>
+
+
+{% block content %}
+There is no any content for you
+{% endblock %}
+</div>
+</body>
+</html>
