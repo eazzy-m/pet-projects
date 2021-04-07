@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-# Create your views here. yes   w
+# Create your views here. yes   war
 
 
 def main(request):
