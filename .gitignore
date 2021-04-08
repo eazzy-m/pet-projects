@@ -1,4 +1,5 @@
 # Django #
+z06_onl_server/settings.py
 *.log
 *.pot
 *.pyc
