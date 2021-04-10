@@ -43,8 +43,32 @@ class Good(models.Model):
     image = models.ImageField(null=True, blank=True, upload_to='images/', verbose_name='Изображение')
     about = models.CharField(max_length=50, verbose_name='Описание товара')
     price = models.DecimalField(max_digits=6, decimal_places=2, default=Decimal("0.00"), verbose_name='Цена')
-    product_category = models.ForeignKey(CategoryGoods, related_name='good', on_delete=models.CASCADE, blank=True,
+    product_category = models.ForeignKey(CategoryGoods, on_delete=models.CASCADE, blank=True,
                                          null=True)
+
+
+class MobTel(Good):
+    Release_date = models.DateField(auto_now_add=False, verbose_name='Дата Выхода')
+    stock_availability = models.BooleanField(default=True, verbose_name='Наличие на складе')
+    o_s = models.CharField(max_length=30, verbose_name='Операционная система')
+    screen_size = models.DecimalField(max_digits=2, decimal_places=1,
+                                      default=Decimal("0.0"), verbose_name='Размер экрана')
+    quant_sim = models.IntegerField(default=1, verbose_name='Количество симкарт')
+
+
+    def __str__(self):
+        return f'{self.title}'
+
+
+class Television(Good):
+    Release_date = models.DateField(auto_now_add=False, verbose_name='Дата Выхода')
+    stock_availability = models.BooleanField(default=True, verbose_name="Наличие на сладе")
+    o_s = models.CharField(max_length=30, verbose_name='Версия системы')
+    screen_resolution = models.IntegerField(default=1, verbose_name='Разрешение экрана')
+
+
+    def __str__(self):
+        return f'{self.title}'
 
 
 class Basket(models.Model):
@@ -64,7 +88,7 @@ class Goods_in_basket(models.Model):
                                       default=Decimal("0.00"), verbose_name='Общая цена')
 
     def __str__(self):
-        return f'{self.basket}--{self.good}--{self.count}'
+        return f'{self.basket}--{self.good.title}--{self.count}'
 
 
 class Order(models.Model):
