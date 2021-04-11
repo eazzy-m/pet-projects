@@ -1,32 +1,24 @@
 from django.contrib import admin
 from django import forms
-
+from django.forms import ModelChoiceField
 
 # Register your models here.
 from catalog.models import *
 
 
-
-
-class MobTelCategoryChoiceField(forms.ModelChoiceField):
-    pass
-
 class MobTelAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'product_category':
-            return MobTelCategoryChoiceField(CategoryGoods.objects.filter(slug='mobtel'))
+            return ModelChoiceField(CategoryGoods.objects.filter(slug='mobtel'))
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
-
-class TelevisionCategoryChoiceField(forms.ModelChoiceField):
-    pass
 
 class TelevisionAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'product_category':
-            return TelevisionCategoryChoiceField(CategoryGoods.objects.filter(slug='television'))
+            return ModelChoiceField(CategoryGoods.objects.filter(slug='television'))
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
