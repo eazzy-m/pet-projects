@@ -1,0 +1,45 @@
+{% extends 'catalog/base_catalog.html' %}
+
+{% block title%}
+Good_detail
+{% endblock %}
+
+{% block content %}
+
+<nav aria_label="breadcrumb" class="m-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'main' %}">Каталог</a></li>
+        <li class="breadcrumb-item"><a href="#">{{ good.product_category.name}}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{good.title}}</li>
+    </ol>
+</nav>
+<div class="row;m-5">
+    <div class="col-md-2">
+        <img src="{{ good.image.url }}" class="img-fluid">
+    </div>
+    <div class="col-md-8">
+        <h3>{{ good.title}}</h3>
+        <p>Цена: {{good.price }}</p>
+        <p>Слаг: {{good.slug }}</p>
+        <p>Описание: {{good.about }}</p>
+        <p>Характеристики:</p>
+        <table class="table" >
+    <tbody>
+    {% for key, value in some_data.items %}
+    <tr>
+        <td>{{ key }}</td>
+        <td>{{ value }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+    </div>
+
+
+
+
+</div>
+
+
+{% endblock %}
+
