@@ -1,12 +1,21 @@
 from decimal import Decimal
-from django.shortcuts import reverse
+from django.urls import reverse
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.auth import get_user_model
+from django.utils.translation import ugettext_lazy as _
 
 
 User = get_user_model()
+
+
+
+
+def get_good_url(obj, viewname):
+    ct_model = obj.__class__._meta.model_name
+    return reverse(viewname, kwargs={'ct_model': ct_model, 'slug': obj.slug})
+
 
 class ShowGoodsManager:
 
@@ -61,7 +70,6 @@ class CategoryGoods(models.Model):
 
 
 class Good(models.Model):
-
     class Meta:
         abstract = True
 
@@ -74,6 +82,7 @@ class Good(models.Model):
                                          null=True)
 
 
+
 class MobTel(Good):
     Release_date = models.DateField(auto_now_add=False, verbose_name='Дата Выхода')
     stock_availability = models.BooleanField(default=True, verbose_name='Наличие на складе')
@@ -82,9 +91,11 @@ class MobTel(Good):
                                       default=Decimal("0.0"), verbose_name='Размер экрана')
     quant_sim = models.IntegerField(default=1, verbose_name='Количество симкарт')
 
-
     def __str__(self):
         return f'{self.title}'
+
+    def get_absolut_url(self):
+        return get_good_url(self, 'good_detail')
 
 
 class Television(Good):
@@ -93,10 +104,23 @@ class Television(Good):
     o_s = models.CharField(max_length=30, verbose_name='Версия системы')
     screen_resolution = models.IntegerField(default=1, verbose_name='Разрешение экрана')
 
+    class Meta:
+        verbose_name        = _('Television')
+        verbose_name_plural = _('Televisions')
+
 
     def __str__(self):
         return f'{self.title}'
 
+    def get_absolut_url(self):
+        return get_good_url(self, 'good_detail')
+
+    def __unicode__(self):
+        return ",".join(["{}:{} ".format(i, getattr(self, i)) for i in self._meta.get_all_field_names()])
+
+    def __iter__(self):
+        for field in self._meta.get_fields():
+            return (field.verbose_name.title())
 
 class Basket(models.Model):
     user = models.OneToOneField('auth.User', on_delete=models.CASCADE, verbose_name='User')
@@ -124,5 +148,3 @@ class Order(models.Model):
 
     def __str__(self):
         return f'{self.status, self.user}'
-
-
