@@ -1,0 +1,78 @@
+{% extends 'catalog/base_catalog.html' %}
+
+{% block title%}
+Category_first
+{% endblock %}
+
+{% block content %}
+<div class="">
+    <div>
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active">
+                <a href="#description" aria-controls="home" role="tab" data-toggle="tab">
+                    Электроника
+                </a>
+            </li>
+            <li role="presentation">
+                <a href="#delivery" aria-controls="profile" role="tab" data-toggle="tab">
+                    Компьютеры и сети
+                </a>
+            </li>
+            <li role="presentation">
+                <a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">
+                    Что-то еще
+                </a>
+            </li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="description">
+                {% for category in category_electronics %}
+                <br>
+                <a href="{% url 'category_name' slug=category.slug %}">{{ category.name }}</a><br>
+                <br>
+                {% endfor %}
+
+            </div>
+            <div role="tabpanel" class="tab-pane" id="delivery">
+                {% for category in category_comps %}
+                <br>
+                <a href="{% url 'category_name' slug=category.slug %}">{{ category.name }}</a><br>
+                <br>
+                {% endfor %}
+            </div>
+            <div role="tabpanel" class="tab-pane" id="messages">
+<!--                <ul class="nav nav-tabs ">-->
+<!--                    <li class="active"><a data-toggle="pill" href="#home">Главная</a></li>-->
+<!--                    <li><a data-toggle="pill" href="#prod">Продукция</a></li>-->
+<!--                    <li><a data-toggle="pill" href="#sale">Акции</a></li>-->
+<!--                    <li><a data-toggle="pill" href="#cont">Контакты</a></li>-->
+<!--                </ul>-->
+
+<!--                <div class="tab-content">-->
+<!--                    <div id="home" class="tab-pane in active">-->
+<!--                        <h3>Главная</h3>-->
+<!--                        <p>Описание преимуществ компании.</p>-->
+<!--                    </div>-->
+<!--                    <div id="prod" class="tab-pane">-->
+<!--                        <h3>Продукция</h3>-->
+<!--                        <p>Каталоги имеющейся продукции.</p>-->
+<!--                    </div>-->
+<!--                    <div id="sale" class="tab-pane ">-->
+<!--                        <h3>Акции2</h3>-->
+<!--                        <p>Список действующих акций.</p>-->
+<!--                    </div>-->
+<!--                    <div id="cont" class="tab-pane">-->
+<!--                        <h3>Контакты</h3>-->
+<!--                        <p>Наши контакты</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+{% endblock %}
+
+

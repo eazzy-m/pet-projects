@@ -92,10 +92,19 @@ class MobTel(Good):
     quant_sim = models.IntegerField(default=1, verbose_name='Количество симкарт')
 
     def __str__(self):
-        return f'{self.title}'
+        return self.title
 
     def get_absolut_url(self):
         return get_good_url(self, 'good_detail')
+
+    # @property
+    # def stock_availability(self):
+    #     if self.stock_availability:
+    #         return 'Да'
+    #     else:
+    #         return 'Нет'
+
+
 
 
 class Television(Good):
@@ -115,12 +124,7 @@ class Television(Good):
     def get_absolut_url(self):
         return get_good_url(self, 'good_detail')
 
-    def __unicode__(self):
-        return ",".join(["{}:{} ".format(i, getattr(self, i)) for i in self._meta.get_all_field_names()])
 
-    def __iter__(self):
-        for field in self._meta.get_fields():
-            return (field.verbose_name.title())
 
 class Basket(models.Model):
     user = models.OneToOneField('auth.User', on_delete=models.CASCADE, verbose_name='User')
@@ -139,7 +143,7 @@ class Goods_in_basket(models.Model):
                                       default=Decimal("0.00"), verbose_name='Общая цена')
 
     def __str__(self):
-        return f'{self.basket}--{self.good.title}--{self.count}'
+        return f'{self.basket}--{self.content_object.title}--{self.count}'
 
 
 class Order(models.Model):

@@ -1,0 +1,19 @@
+{% extends 'catalog/base_catalog.html' %}
+
+{% block title%}
+Category_name
+{% endblock %}
+
+{% block content %}
+
+{% if category_name %}
+{% for category in category_name %}
+
+<a href="{% url 'category_goods' slug=category.slug %}">{{ category }}</a><br>
+{% endfor %}
+
+{% else %}
+НЕТ
+{% endif %}
+
+{% endblock %}
