@@ -9,7 +9,7 @@ Category_name
 {% if category_name %}
 {% for category in category_name %}
 
-<a href="{% url 'category_goods' slug=category.slug %}">{{ category }}</a><br>
+<a href="{% url 'category_goods' slug=category.slug %}">{{ category.name }}  ({{ category.count }})</a><br>
 {% endfor %}
 
 {% else %}
@@ -17,3 +17,4 @@ Category_name
 {% endif %}
 
 {% endblock %}
+

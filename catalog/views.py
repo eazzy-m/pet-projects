@@ -43,10 +43,27 @@ def category_first(request):
 
 
 def category_name(request, slug):
-    category_name = CategorySecond.objects.get(slug=slug).category_goods.all()
-    return render(request, 'catalog/category_name.html', {
-        'category_name': category_name,
-    })
+    Cat = {
+        'Мобильные телефоны': 'mobtel__count',
+        'Телевизоры': 'television__count',
+        'Наушники': 'Headphones__count',
+        'ТВ-антенны': 'tv_antennas__count',
+        'Ноутбуки': 'laptops__count',
+        'Компьютреы': 'computers__count',
+        'Видеокарты': 'video_cards__count',
+        'Процессоры': 'processors__count',
+    }
+    list_data = CategoryGoods.objects.get_count_good_in_cat()
+    categoryname = CategorySecond.objects.get(slug=slug).category_goods.all()
+    category_name = []
+    for i in categoryname:
+        for k in list_data:
+            if i.name in k.values():
+                if Cat[i.name] in k:
+                    category_name.append(dict(name=k['name'], slug=k['slug'], count=k[Cat[i.name]]))
+                else:
+                    category_name.append(dict(name=k['name'], slug=k['slug'], count=0))
+    return render(request, 'catalog/category_name.html', {'category_name': category_name})
 
 
 def category_goods(request, slug):
@@ -55,7 +72,6 @@ def category_goods(request, slug):
         'television': Television
     }
     if slug in mod:
-        print(mod[slug].__name__)
         model = globals().get(mod[slug].__name__)
         category_goods = model.objects.all()
         return render(request, 'catalog/category_goods.html', {
