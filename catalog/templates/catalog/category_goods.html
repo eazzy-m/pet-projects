@@ -1,0 +1,20 @@
+{% extends 'catalog/base_catalog.html' %}
+
+{% block title%}
+Category_goods
+{% endblock %}
+
+{% block content %}
+
+{% if category_goods %}
+{% for good in category_goods %}
+<a href="{% url 'good_detail' ct_model=slug slug=good.slug %}">{{ good.title }}</a><br>
+<br>
+<br>
+{% endfor %}
+{% else %}
+НЕТ ТОВАРОВ
+{% endif %}
+
+
+{% endblock %}

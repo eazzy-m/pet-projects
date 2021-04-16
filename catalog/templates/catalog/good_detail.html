@@ -8,8 +8,8 @@ Good_detail
 
 <nav aria_label="breadcrumb" class="m-3">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'main' %}">Каталог</a></li>
-        <li class="breadcrumb-item"><a href="#">{{ good.product_category.name}}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'category_first' %}">Каталог</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'category_goods' slug=good.product_category.slug %}">{{ good.product_category.name}}</a></li>
         <li class="breadcrumb-item active" aria-current="page">{{good.title}}</li>
     </ol>
 </nav>
