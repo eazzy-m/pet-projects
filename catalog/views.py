@@ -1,11 +1,16 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import DetailView
+from django.views.generic import DetailView, View
+from django.contrib.auth.models import User
 from catalog.models import MobTel, Television, Basket, Goods_in_basket, \
     CategoryFirst, CategorySecond, CategoryGoods, Good
+from django.http import HttpResponseRedirect
+from django.contrib.contenttypes.models import ContentType
+from catalog.mixins import BasketMixin
 
 
 def main(request):
-    return render(request, 'main.html')
+    basket = Basket.objects.get(user__username=request.user)
+    return render(request, 'main.html', {'basket' : basket})
 
 
 class GoodDetailView(DetailView):
@@ -29,7 +34,6 @@ class GoodDetailView(DetailView):
         # Добавляем новую переменную к контексту и инициализируем её некоторым значением
         context['some_data'] = {i.verbose_name.title().capitalize(): i.value_from_object(kwargs['object']) for i in
                                 self.model._meta.get_fields()[7:]}
-        print(context['some_data'])
         return context
 
 
@@ -82,3 +86,46 @@ def category_goods(request, slug):
         return render(request, 'catalog/category_goods.html', {
             'slug': slug,
         })
+
+
+class AddGoodInBasket(BasketMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        ct_model, good_slug = kwargs.get('ct_model'), kwargs.get('slug')
+
+        content_type = ContentType.objects.get(model=ct_model)
+        good = content_type.model_class().objects.get(slug=good_slug)
+        good_in_basket, created = Goods_in_basket.objects.get_or_create(
+             basket=self.basket, content_type=content_type, object_id=good.id,
+        )
+
+        return HttpResponseRedirect('/basket/')
+
+
+class BasketView(BasketMixin, View):
+
+    def get(self, request, *args, **kwargs):
+
+        goods_in_basket = Goods_in_basket.objects.filter(basket=self.basket)
+        context = {'basket': self.basket, 'goods_in_basket': goods_in_basket}
+        return render(request, 'catalog/basket.html', context)
+
+        # def basket(request, good_pk):
+        #     if Basket.objects.filter(user__username=request.user):
+        #         b = Basket.objects.get(user__username=request.user)
+        #         g = Goods.objects.get(pk=good_pk)
+        #         if Goods_in_basket.objects.filter(basket=b, good=g):
+        #             good_in_basket = Goods_in_basket.objects.get(basket=b, good=g)
+        #             print(good_in_basket.count)
+        #             good_in_basket.count += 1
+        #             good_in_basket.save()
+        #             print(good_in_basket.count)
+        #         else:
+        #             good_in_basket = Goods_in_basket.objects.create(basket=b, good=g)
+        #             good_in_basket.save()
+        #     else:
+        #         b = Basket.objects.create(user=request.user)
+        #         g = Goods.objects.get(pk=good_pk)
+        #         good_in_basket = Goods_in_basket.objects.create(basket=b, good=g)
+        #         good_in_basket.save()
+        #     return redirect('basket_list')

@@ -1,0 +1,46 @@
+{% extends 'catalog/base_catalog.html' %}
+
+{% block title%}
+Basket
+{% endblock %}
+
+{% block content %}
+{% if goods_in_basket %}
+<h3 class="text-center mt-5 mb-5">Ваша корзина </h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Наименование</th>
+      <th scope="col">Изображение</th>
+      <th scope="col">Цена</th>
+      <th scope="col">Количество</th>
+      <th scope="col">Общая цена</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for good in goods_in_basket %}
+    <tr>
+      <th scope="row">{{ good.content_object }}</th>
+      <td class="w=15">
+        {% if good.content_object.image %}
+        <img src="{{good.content_object.image.url}}" style="max-height:80px"><br>
+        {% endif %}</td>
+      <td>{{good.content_object.price}}</td>
+      <td>{{good.count}}</td>
+      <td>{{good.total_price}}</td>
+    </tr>
+  {% endfor %}
+  <tr>
+    <td colspan="2"></td>
+    <td>Итого:</td>
+    <td>{{ basket.quantity_goods_basket }}</td>
+    <td>{{ basket.total_price_basket }}</td>
+  </tr>
+  </tbody>
+</table>
+{% else %}
+<h3 class="text-center mt-5 mb-5">Ваша корзина пуста</h3>
+{% endif %}
+
+{% endblock %}
+

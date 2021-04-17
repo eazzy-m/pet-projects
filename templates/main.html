@@ -55,7 +55,7 @@
                     <a class="nav-link" href="#" style="text-decoration: none; color: #020000"></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" style="text-decoration: none; color: #020000"></a>
+                    <a class="nav-link" href="{% url 'basket' %}" >Корзина <span class="badge-pill badge-danger">{{ basket.goods_in_basket.count}}</span></a>
                 </li>
             </ul>
             <form class="d-flex">

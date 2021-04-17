@@ -136,9 +136,22 @@ class Television(Good):
 
 class Basket(models.Model):
     user = models.OneToOneField('auth.User', on_delete=models.CASCADE, verbose_name='User')
+    goods = models.ManyToManyField('Goods_in_basket', blank=True, related_name='related_basket')
+    quantity_goods_basket = models.PositiveIntegerField(default=0)
+    total_price_basket = models.DecimalField(max_digits=6, decimal_places=2,
+                                      default=Decimal("0.00"), verbose_name='Общая цена корзины')
 
     def __str__(self):
         return self.user.username
+
+    def save(self, *args, **kwargs):
+        basket_data = self.goods_in_basket.aggregate(models.Sum('total_price'), models.Count('id'))
+        if basket_data['total_price__sum']:
+            self.total_price_basket = basket_data['total_price__sum']
+        else:
+            self.total_price_basket = 0
+        self.quantity_goods_basket = basket_data['id__count']
+        super().save(*args, **kwargs)
 
 
 class Goods_in_basket(models.Model):
@@ -153,6 +166,10 @@ class Goods_in_basket(models.Model):
 
     def __str__(self):
         return f'{self.basket}--{self.content_object.title}--{self.count}'
+
+    def save(self, *args, **kwargs):
+        self.total_price = self.count * self.content_object.price
+        super().save(*args, **kwargs)
 
 
 class Order(models.Model):
