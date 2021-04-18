@@ -138,7 +138,7 @@ class Basket(models.Model):
     user = models.OneToOneField('auth.User', on_delete=models.CASCADE, verbose_name='User')
     goods = models.ManyToManyField('Goods_in_basket', blank=True, related_name='related_basket')
     quantity_goods_basket = models.PositiveIntegerField(default=0)
-    total_price_basket = models.DecimalField(max_digits=6, decimal_places=2,
+    total_price_basket = models.DecimalField(max_digits=10, decimal_places=2,
                                       default=Decimal("0.00"), verbose_name='Общая цена корзины')
 
     def __str__(self):
@@ -161,7 +161,7 @@ class Goods_in_basket(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
     count = models.PositiveIntegerField(default=1, verbose_name='Количество')
-    total_price = models.DecimalField(max_digits=6, decimal_places=2,
+    total_price = models.DecimalField(max_digits=10, decimal_places=2,
                                       default=Decimal("0.00"), verbose_name='Общая цена')
 
     def __str__(self):

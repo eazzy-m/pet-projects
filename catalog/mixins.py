@@ -10,3 +10,4 @@ class BasketMixin(View):
         self.basket = Basket.objects.get(user__username=request.user)
         self.basket.save()
         return super().dispatch(request, *args, **kwargs)
+

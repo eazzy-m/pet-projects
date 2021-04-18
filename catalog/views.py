@@ -92,13 +92,39 @@ class AddGoodInBasket(BasketMixin, View):
 
     def get(self, request, *args, **kwargs):
         ct_model, good_slug = kwargs.get('ct_model'), kwargs.get('slug')
-
         content_type = ContentType.objects.get(model=ct_model)
         good = content_type.model_class().objects.get(slug=good_slug)
         good_in_basket, created = Goods_in_basket.objects.get_or_create(
-             basket=self.basket, content_type=content_type, object_id=good.id,
-        )
+             basket=self.basket, content_type=content_type, object_id=good.id)
+        # self.basket.save()
+        return HttpResponseRedirect('/basket/')
 
+
+class DelGoodInBasket(BasketMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        ct_model, good_slug = kwargs.get('ct_model'), kwargs.get('slug')
+        content_type = ContentType.objects.get(model=ct_model)
+        good = content_type.model_class().objects.get(slug=good_slug)
+        good_in_basket = Goods_in_basket.objects.get(
+             basket=self.basket, content_type=content_type, object_id=good.id)
+        good_in_basket.delete()
+        self.basket.save()
+        return HttpResponseRedirect('/basket/')
+
+
+class ChangeGoodInBasket(BasketMixin, View):
+
+    def post(self, request, *args, **kwargs):
+        ct_model, good_slug = kwargs.get('ct_model'), kwargs.get('slug')
+        content_type = ContentType.objects.get(model=ct_model)
+        good = content_type.model_class().objects.get(slug=good_slug)
+        good_in_basket = Goods_in_basket.objects.get(
+             basket=self.basket, content_type=content_type, object_id=good.id)
+        count = int(request.POST.get('count'))
+        good_in_basket.count = count
+        good_in_basket.save()
+        self.basket.save()
         return HttpResponseRedirect('/basket/')
 
 
@@ -106,7 +132,7 @@ class BasketView(BasketMixin, View):
 
     def get(self, request, *args, **kwargs):
 
-        goods_in_basket = Goods_in_basket.objects.filter(basket=self.basket)
+        goods_in_basket = Goods_in_basket.objects.filter(basket=self.basket).order_by('pk')
         context = {'basket': self.basket, 'goods_in_basket': goods_in_basket}
         return render(request, 'catalog/basket.html', context)
 
@@ -129,3 +155,6 @@ class BasketView(BasketMixin, View):
         #         good_in_basket = Goods_in_basket.objects.create(basket=b, good=g)
         #         good_in_basket.save()
         #     return redirect('basket_list')
+
+
+
