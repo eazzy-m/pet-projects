@@ -6,6 +6,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 
+
 User = get_user_model()
 
 
@@ -139,7 +140,7 @@ class Basket(models.Model):
     goods = models.ManyToManyField('Goods_in_basket', blank=True, related_name='related_basket')
     quantity_goods_basket = models.PositiveIntegerField(default=0)
     total_price_basket = models.DecimalField(max_digits=10, decimal_places=2,
-                                      default=Decimal("0.00"), verbose_name='Общая цена корзины')
+                                             default=Decimal("0.00"), verbose_name='Общая цена корзины')
 
     def __str__(self):
         return self.user.username
@@ -173,8 +174,27 @@ class Goods_in_basket(models.Model):
 
 
 class Order(models.Model):
+    STATUS_IN_PROGRESS = 'in_progress'
+    STATUS_COMPLETED = 'completed'
+
+    BUYING_TYPE_SELF = 'self'
+    BUYING_TYPE_DELIVERY = 'delivery'
+
+    STATUS_CHOICES = ((STATUS_IN_PROGRESS, 'Заказ в обработке'), (STATUS_COMPLETED, 'Заказ выполнен'))
+
+    BUYING_TYPE_CHOICES = ((BUYING_TYPE_SELF, 'Самовывоз'), (BUYING_TYPE_DELIVERY, 'Доставка'))
+
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE, verbose_name='User')
-    status = models.CharField(max_length=32, verbose_name='Статус', default='в процессе')
+    first_name = models.CharField(max_length=200, verbose_name='Имя')
+    last_name = models.CharField(max_length=200, verbose_name='Фамилия')
+    phone = models.CharField(max_length=20, verbose_name='Телефон')
+    address = models.CharField(max_length=400, verbose_name='Адрес', null=True, blank=True)
+    status = models.CharField(max_length=100, verbose_name='Статус', choices=STATUS_CHOICES, default=STATUS_IN_PROGRESS)
+    buying_type = models.CharField(max_length=100, verbose_name='Способ получения', choices=BUYING_TYPE_CHOICES,
+                                   default=BUYING_TYPE_SELF)
+    comment = models.TextField(verbose_name='Комментарий к заказу', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания заказа')
+
 
     def __str__(self):
-        return f'{self.status, self.user}'
+        return f'{self.created_at, self.user}'

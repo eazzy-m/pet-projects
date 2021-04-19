@@ -1,16 +1,17 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import DetailView, View
 from django.contrib.auth.models import User
+from django.contrib import messages
 from catalog.models import MobTel, Television, Basket, Goods_in_basket, \
     CategoryFirst, CategorySecond, CategoryGoods, Good
 from django.http import HttpResponseRedirect
 from django.contrib.contenttypes.models import ContentType
 from catalog.mixins import BasketMixin
+from catalog.forms import OrderForm
 
 
 def main(request):
-    basket = Basket.objects.get(user__username=request.user)
-    return render(request, 'main.html', {'basket' : basket})
+    return render(request, 'main.html', {})
 
 
 class GoodDetailView(DetailView):
@@ -96,7 +97,7 @@ class AddGoodInBasket(BasketMixin, View):
         good = content_type.model_class().objects.get(slug=good_slug)
         good_in_basket, created = Goods_in_basket.objects.get_or_create(
              basket=self.basket, content_type=content_type, object_id=good.id)
-        # self.basket.save()
+        messages.add_message(request, messages.INFO, "Товар добавлен")
         return HttpResponseRedirect('/basket/')
 
 
@@ -110,6 +111,7 @@ class DelGoodInBasket(BasketMixin, View):
              basket=self.basket, content_type=content_type, object_id=good.id)
         good_in_basket.delete()
         self.basket.save()
+        messages.add_message(request, messages.INFO, "Товар удален")
         return HttpResponseRedirect('/basket/')
 
 
@@ -125,6 +127,7 @@ class ChangeGoodInBasket(BasketMixin, View):
         good_in_basket.count = count
         good_in_basket.save()
         self.basket.save()
+        messages.add_message(request, messages.INFO, "Количество изменено")
         return HttpResponseRedirect('/basket/')
 
 
@@ -136,25 +139,26 @@ class BasketView(BasketMixin, View):
         context = {'basket': self.basket, 'goods_in_basket': goods_in_basket}
         return render(request, 'catalog/basket.html', context)
 
-        # def basket(request, good_pk):
-        #     if Basket.objects.filter(user__username=request.user):
-        #         b = Basket.objects.get(user__username=request.user)
-        #         g = Goods.objects.get(pk=good_pk)
-        #         if Goods_in_basket.objects.filter(basket=b, good=g):
-        #             good_in_basket = Goods_in_basket.objects.get(basket=b, good=g)
-        #             print(good_in_basket.count)
-        #             good_in_basket.count += 1
-        #             good_in_basket.save()
-        #             print(good_in_basket.count)
-        #         else:
-        #             good_in_basket = Goods_in_basket.objects.create(basket=b, good=g)
-        #             good_in_basket.save()
-        #     else:
-        #         b = Basket.objects.create(user=request.user)
-        #         g = Goods.objects.get(pk=good_pk)
-        #         good_in_basket = Goods_in_basket.objects.create(basket=b, good=g)
-        #         good_in_basket.save()
-        #     return redirect('basket_list')
 
+class MakingOrderView(BasketMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        goods_in_basket = Goods_in_basket.objects.filter(basket=self.basket).order_by('pk')
+        form = OrderForm(request.POST or None)
+        context = {'basket': self.basket, 'goods_in_basket': goods_in_basket, 'form': form}
+        return render(request, 'catalog/making_order.html', context)
+
+
+class AddOrderView(BasketMixin, View):
+
+    def post(self, request, *args, **kwargs):
+        form = OrderForm(request.POST or None)
+        if form.is_valid():
+            order = form.save(commit=False)
+            order.user = request.user
+            order.save()
+            goods_in_basket = Goods_in_basket.objects.filter(basket=self.basket)
+            goods_in_basket.delete()
+            return HttpResponseRedirect('/basket/')
 
 

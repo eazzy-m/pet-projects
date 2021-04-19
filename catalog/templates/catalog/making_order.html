@@ -1,0 +1,55 @@
+{% extends 'catalog/base_catalog.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title%}
+Making_order
+{% endblock %}
+
+{% block content %}
+<div class="w-75 p-3 ">
+<h3 class="text-center mt-5 mb-5">Оформление заказа </h3>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Наименование</th>
+        <th scope="col">Изображение</th>
+        <th scope="col">Цена</th>
+        <th scope="col">Количество</th>
+        <th scope="col">Общая цена</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for good in goods_in_basket %}
+    <tr>
+        <th scope="row">{{ good.content_object }}</th>
+        <td class="w=15">
+            {% if good.content_object.image %}
+            <img src="{{good.content_object.image.url}}" style="max-height:80px"><br>
+            {% endif %}
+        </td>
+        <td>{{good.content_object.price}}</td>
+        <td>{{good.count}}</td>
+        <td>{{good.total_price}}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td colspan="2"></td>
+        <td>Итого(наименований):</td>
+        <td>{{ basket.quantity_goods_basket }}</td>
+        <td>{{ basket.total_price_basket }}</td>
+    </tr>
+    </tbody>
+</table>
+<hr>
+    <div class="w-50 p-3 mt-5 mb-5" style="margin-left: 50px">
+    <form action="{% url 'add_order'  %}" method="POST">
+        {% csrf_token %}
+{{ form|crispy }}
+    <input type="submit" class="btn btn-success btn-block mb-3" value="Оформить заказ">
+    </form>
+</div>
+</div>
+{% endblock %}
+
