@@ -7,7 +7,7 @@ from catalog.models import MobTel, Television, Basket, Goods_in_basket, \
 from django.http import HttpResponseRedirect
 from django.contrib.contenttypes.models import ContentType
 from catalog.mixins import BasketMixin
-from catalog.forms import OrderForm
+from catalog.forms import OrderForm, MobtelForm, TelevisionForm
 
 
 def main(request):
@@ -71,21 +71,35 @@ def category_name(request, slug):
 
 
 def category_goods(request, slug):
-    mod = {
-        'mobtel': MobTel,
-        'television': Television
-    }
+    mod = {'mobtel': MobTel, 'television': Television}
+    form = {'mobtel': MobtelForm(), 'television': TelevisionForm()}
     if slug in mod:
         model = globals().get(mod[slug].__name__)
+        form = form[slug]
         category_goods = model.objects.all()
+        category_name = model.objects.first().product_category
+        if request.method == 'POST':
+            form = {'mobtel': MobtelForm, 'television': TelevisionForm}
+            form = form[slug](request.POST, request.FILES)
+            if form.is_valid():
+                good = form.save(commit=False)
+                good.product_category = category_name
+                good.save()
+                return redirect('good_detail', ct_model=slug, slug=good.slug)
+        if str(request.user) == 'shop':
+            user = True
+        else:
+            user = None
         return render(request, 'catalog/category_goods.html', {
-            'category_goods': category_goods,
-            'slug': slug,
+            'category_goods': category_goods,'category_name': category_name,
+            'slug': slug, 'form': form, 'user': user,
         })
     else:
         return render(request, 'catalog/category_goods.html', {
             'slug': slug,
         })
+
+
 
 
 class AddGoodInBasket(BasketMixin, View):
@@ -174,3 +188,15 @@ class OrderView(View):
         order_list = {order: order.goods_in_order.all() for order in orders}
         context = {'orders': order_list}
         return render(request, 'catalog/orders.html', context)
+
+# def add_mobtel(request,product_category_slug):
+# if request.method == 'POST':
+#     form = MobtelForm(request.POST, request.FILES)
+#     if form.is_valid():
+#         good = form.save(commit=False)
+#         good.product_category = CategoryG.objects.get(pk=product_category_pk)
+#         good.save()
+#         return redirect('good_detail', good_pk=good.pk)
+# else:
+# form = MobtelForm()
+# return render(request, 'catalog/add_mobtel.html', {'form': form})

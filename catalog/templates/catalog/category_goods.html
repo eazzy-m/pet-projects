@@ -1,12 +1,25 @@
 {% extends 'catalog/base_catalog.html' %}
+{% load crispy_forms_tags %}
 
 {% block title%}
 Category_goods
 {% endblock %}
 
 {% block content %}
-
 {% if category_goods %}
+ <div class="w-50 p-3 mt-5 mb-5" style="margin-left: 50px">
+     <h2>{{ category_name }}</h2><br>
+{% if user  %}
+
+     <h3>Добавте товар</h3><br>
+<form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+{{ form|crispy }}
+    <input type="submit" class="btn btn-success btn-block mb-3" value="добавить товар">
+    </form>
+ </div>
+{% endif %}
+
 {% for good in category_goods %}
 <a href="{% url 'good_detail' ct_model=slug slug=good.slug %}">{{ good.title }}</a><br>
 <br>
