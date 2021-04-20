@@ -7,7 +7,11 @@ from catalog.models import Basket
 class BasketMixin(View):
 
     def dispatch(self, request, *args, **kwargs):
-        self.basket = Basket.objects.get(user__username=request.user)
-        self.basket.save()
+        if Basket.objects.filter(user__username=request.user):
+            self.basket = Basket.objects.get(user__username=request.user)
+            self.basket.save()
+        else:
+            self.basket = Basket.objects.create(user=request.user)
+            self.basket.save()
         return super().dispatch(request, *args, **kwargs)
 

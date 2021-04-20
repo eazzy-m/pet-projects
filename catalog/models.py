@@ -141,6 +141,7 @@ class Basket(models.Model):
     quantity_goods_basket = models.PositiveIntegerField(default=0)
     total_price_basket = models.DecimalField(max_digits=10, decimal_places=2,
                                              default=Decimal("0.00"), verbose_name='Общая цена корзины')
+    in_order = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.username
@@ -194,7 +195,26 @@ class Order(models.Model):
                                    default=BUYING_TYPE_SELF)
     comment = models.TextField(verbose_name='Комментарий к заказу', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания заказа')
-
+    goods = models.ManyToManyField('Goods_in_order', blank=True, related_name='related_order')
+    total_price = models.DecimalField(max_digits=10, decimal_places=2,
+                                      default=Decimal("0.00"), verbose_name='Общая цена')
+    quantity_goods_order = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f'{self.created_at, self.user}'
+
+
+
+class Goods_in_order(models.Model):
+    order = models.ForeignKey('Order', on_delete=models.CASCADE, verbose_name='Заказ',
+                               related_name='goods_in_order')
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    count = models.PositiveIntegerField(default=1, verbose_name='Количество')
+    total_price = models.DecimalField(max_digits=10, decimal_places=2,
+                                      default=Decimal("0.00"), verbose_name='Общая цена')
+
+    def __str__(self):
+        return f'{self.order}--{self.content_object.title}--{self.count}'
+

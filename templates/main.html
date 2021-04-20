@@ -57,6 +57,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'basket' %}" >Корзина <span class="badge-pill badge-danger">{{ request.user.basket.quantity_goods_basket}}</span></a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'orders' %}" >Заказы<span class="badge-pill badge-danger"></span></a>
+                </li>
             </ul>
             <form class="d-flex">
                 <input class="form-control me-2" type="search" placeholder="поиск" aria-label="Search">

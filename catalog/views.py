@@ -3,7 +3,7 @@ from django.views.generic import DetailView, View
 from django.contrib.auth.models import User
 from django.contrib import messages
 from catalog.models import MobTel, Television, Basket, Goods_in_basket, \
-    CategoryFirst, CategorySecond, CategoryGoods, Good
+    CategoryFirst, CategorySecond, CategoryGoods, Good, Order, Goods_in_order
 from django.http import HttpResponseRedirect
 from django.contrib.contenttypes.models import ContentType
 from catalog.mixins import BasketMixin
@@ -41,14 +41,13 @@ class GoodDetailView(DetailView):
 def category_first(request):
     category_electronics = CategoryFirst.objects.get(name='Электроника').category_second.all()
     category_comps = CategoryFirst.objects.get(name='Компьютеры и сети').category_second.all()
-
     return render(request, 'catalog/category_first.html', {'category_electronics': category_electronics,
                                                            'category_comps': category_comps
                                                            })
 
 
 def category_name(request, slug):
-    Cat = {
+    cat = {
         'Мобильные телефоны': 'mobtel__count',
         'Телевизоры': 'television__count',
         'Наушники': 'Headphones__count',
@@ -64,8 +63,8 @@ def category_name(request, slug):
     for i in categoryname:
         for k in list_data:
             if i.name in k.values():
-                if Cat[i.name] in k:
-                    category_name.append(dict(name=k['name'], slug=k['slug'], count=k[Cat[i.name]]))
+                if cat[i.name] in k:
+                    category_name.append(dict(name=k['name'], slug=k['slug'], count=k[cat[i.name]]))
                 else:
                     category_name.append(dict(name=k['name'], slug=k['slug'], count=0))
     return render(request, 'catalog/category_name.html', {'category_name': category_name})
@@ -96,7 +95,7 @@ class AddGoodInBasket(BasketMixin, View):
         content_type = ContentType.objects.get(model=ct_model)
         good = content_type.model_class().objects.get(slug=good_slug)
         good_in_basket, created = Goods_in_basket.objects.get_or_create(
-             basket=self.basket, content_type=content_type, object_id=good.id)
+            basket=self.basket, content_type=content_type, object_id=good.id)
         messages.add_message(request, messages.INFO, "Товар добавлен")
         return HttpResponseRedirect('/basket/')
 
@@ -108,7 +107,7 @@ class DelGoodInBasket(BasketMixin, View):
         content_type = ContentType.objects.get(model=ct_model)
         good = content_type.model_class().objects.get(slug=good_slug)
         good_in_basket = Goods_in_basket.objects.get(
-             basket=self.basket, content_type=content_type, object_id=good.id)
+            basket=self.basket, content_type=content_type, object_id=good.id)
         good_in_basket.delete()
         self.basket.save()
         messages.add_message(request, messages.INFO, "Товар удален")
@@ -122,7 +121,7 @@ class ChangeGoodInBasket(BasketMixin, View):
         content_type = ContentType.objects.get(model=ct_model)
         good = content_type.model_class().objects.get(slug=good_slug)
         good_in_basket = Goods_in_basket.objects.get(
-             basket=self.basket, content_type=content_type, object_id=good.id)
+            basket=self.basket, content_type=content_type, object_id=good.id)
         count = int(request.POST.get('count'))
         good_in_basket.count = count
         good_in_basket.save()
@@ -134,7 +133,6 @@ class ChangeGoodInBasket(BasketMixin, View):
 class BasketView(BasketMixin, View):
 
     def get(self, request, *args, **kwargs):
-
         goods_in_basket = Goods_in_basket.objects.filter(basket=self.basket).order_by('pk')
         context = {'basket': self.basket, 'goods_in_basket': goods_in_basket}
         return render(request, 'catalog/basket.html', context)
@@ -156,9 +154,23 @@ class AddOrderView(BasketMixin, View):
         if form.is_valid():
             order = form.save(commit=False)
             order.user = request.user
+            order.total_price = self.basket.total_price_basket
+            order.quantity_goods_order = self.basket.quantity_goods_basket
             order.save()
             goods_in_basket = Goods_in_basket.objects.filter(basket=self.basket)
+            for go in goods_in_basket:
+                Goods_in_order.objects.create(order=order, content_type=go.content_type, object_id=go.object_id,
+                                              content_object=go.content_object, count=go.count,
+                                              total_price=go.total_price)
             goods_in_basket.delete()
-            return HttpResponseRedirect('/basket/')
+            self.basket.save()
+            return HttpResponseRedirect('/orders/')
 
 
+class OrderView(View):
+
+    def get(self, request, *args, **kwargs):
+        orders = Order.objects.filter(user__username=request.user)
+        order_list = {order: order.goods_in_order.all() for order in orders}
+        context = {'orders': order_list}
+        return render(request, 'catalog/orders.html', context)
