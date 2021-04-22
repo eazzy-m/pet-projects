@@ -3,11 +3,11 @@
 {% load crispy_forms_tags %}
 
 {% block title%}
-Good_detail
+Feedback_list
 {% endblock %}
 
 {% block content %}
-
+<div>
 <nav aria_label="breadcrumb" class="m-3">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{% url 'category_first' %}">Каталог</a></li>
@@ -24,32 +24,27 @@ Good_detail
         <p>Цена: {{good.price }}</p>
         <p>Слаг: {{good.slug }}</p>
         <p>Описание: {{good.about }}</p>
+           <br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
-        <p>Характеристики:</p>
-        <table class="table" >
-    <tbody>
-    {% for key, value in some_data.items %}
-    <tr>
-        <td>{{ key }}</td>
-        <td>{{ value }}</td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
     </div>
-
-
-
-
 </div>
+</div>
+<div class="w-50 p-3 mt-5 mb-5" style="margin-left: 50px">
+    <h2>Отзывы</h2><br>
+{% for feedback in feedbacks %}
+Автор:   {{feedback.author }}    {{feedback.created_date }}<br>
+Название:       {{feedback.title }}<br>
+Текст:           {{feedback.text }}<br>
+Достоинства:      {{feedback.dignities }}<br>
+Недостатки:       {{feedback.disadvantages }}<br>
+Оценка:           {{feedback.estimation }}<br><br><br>
 
-        <a href="{% url 'add_good_in_basket' ct_model=good.product_category.slug slug=good.slug %}"><button
-                class="btn btn-danger">Добавить в корзину</button> </a><br><br>
-  <a href="{% url 'add_feedback' ct_model=good.product_category.slug slug=good.slug %}"><button
-                class="btn btn-primary">Добавить отзыв</button> </a><br><br>
-
-<a href="{% url 'feedback_list' ct_model=good.product_category.slug slug=good.slug %}"><button
-                class="btn btn-primary">Отзывы</button> </a>({{q_feedbacks}}) <br>Средняя оценка  {{estimation}}
-
+{% endfor %}
+</div>
 {% endblock %}
 

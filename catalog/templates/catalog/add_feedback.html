@@ -3,11 +3,11 @@
 {% load crispy_forms_tags %}
 
 {% block title%}
-Good_detail
+Add_feedback
 {% endblock %}
 
 {% block content %}
-
+<div>
 <nav aria_label="breadcrumb" class="m-3">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{% url 'category_first' %}">Каталог</a></li>
@@ -24,32 +24,27 @@ Good_detail
         <p>Цена: {{good.price }}</p>
         <p>Слаг: {{good.slug }}</p>
         <p>Описание: {{good.about }}</p>
+           <br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
-        <p>Характеристики:</p>
-        <table class="table" >
-    <tbody>
-    {% for key, value in some_data.items %}
-    <tr>
-        <td>{{ key }}</td>
-        <td>{{ value }}</td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
     </div>
-
-
-
-
+</div>
 </div>
 
-        <a href="{% url 'add_good_in_basket' ct_model=good.product_category.slug slug=good.slug %}"><button
-                class="btn btn-danger">Добавить в корзину</button> </a><br><br>
-  <a href="{% url 'add_feedback' ct_model=good.product_category.slug slug=good.slug %}"><button
-                class="btn btn-primary">Добавить отзыв</button> </a><br><br>
+<div class="w-50 p-3 mt-5 mb-5" style="margin-left: 50px">
 
-<a href="{% url 'feedback_list' ct_model=good.product_category.slug slug=good.slug %}"><button
-                class="btn btn-primary">Отзывы</button> </a>({{q_feedbacks}}) <br>Средняя оценка  {{estimation}}
 
+     <h3>Добавте отзыв</h3><br>
+<form action="" method="POST" >
+        {% csrf_token %}
+{{ form|crispy }}
+    <input type="submit" class="btn btn-success btn-block mb-3" value="добавить отзыв">
+    </form>
+
+</div>
 {% endblock %}
 

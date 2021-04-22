@@ -3,12 +3,12 @@ from django.views.generic import DetailView, View
 from django.contrib.auth.models import User
 from django.contrib import messages
 from catalog.models import MobTel, Television, Basket, Goods_in_basket, \
-    CategoryFirst, CategorySecond, CategoryGoods, Good, Order, Goods_in_order
+    CategoryFirst, CategorySecond, CategoryGoods, Good, Order, Goods_in_order, Feedback
 from django.http import HttpResponseRedirect
 from django.contrib.contenttypes.models import ContentType
 from catalog.mixins import BasketMixin
-from catalog.forms import OrderForm, MobtelForm, TelevisionForm
-
+from catalog.forms import OrderForm, MobtelForm, TelevisionForm, FeedBackForm
+import statistics
 
 def main(request):
     return render(request, 'main.html', {})
@@ -35,8 +35,18 @@ class GoodDetailView(DetailView):
         # Добавляем новую переменную к контексту и инициализируем её некоторым значением
         context['some_data'] = {i.verbose_name.title().capitalize(): i.value_from_object(kwargs['object']) for i in
                                 self.model._meta.get_fields()[7:]}
+        ct_model = kwargs['object'].product_category.slug
+        good_slug = kwargs['object'].slug
+        content_type = ContentType.objects.get(model=ct_model)
+        good = content_type.model_class().objects.get(slug=good_slug)
+        feedbacks = Feedback.objects.all().filter(object_id=good.id, content_type=content_type)
+        context['q_feedbacks'] = len(feedbacks)
+        if feedbacks:
+            context['estimation'] = int(statistics.mean([i.estimation for i in feedbacks]))
+        else:
+            context['estimation'] = 3
         return context
-
+#.filter(object_id=good.id))
 
 def category_first(request):
     category_electronics = CategoryFirst.objects.get(name='Электроника').category_second.all()
@@ -91,15 +101,13 @@ def category_goods(request, slug):
         else:
             user = None
         return render(request, 'catalog/category_goods.html', {
-            'category_goods': category_goods,'category_name': category_name,
+            'category_goods': category_goods, 'category_name': category_name,
             'slug': slug, 'form': form, 'user': user,
         })
     else:
         return render(request, 'catalog/category_goods.html', {
             'slug': slug,
         })
-
-
 
 
 class AddGoodInBasket(BasketMixin, View):
@@ -189,14 +197,26 @@ class OrderView(View):
         context = {'orders': order_list}
         return render(request, 'catalog/orders.html', context)
 
-# def add_mobtel(request,product_category_slug):
-# if request.method == 'POST':
-#     form = MobtelForm(request.POST, request.FILES)
-#     if form.is_valid():
-#         good = form.save(commit=False)
-#         good.product_category = CategoryG.objects.get(pk=product_category_pk)
-#         good.save()
-#         return redirect('good_detail', good_pk=good.pk)
-# else:
-# form = MobtelForm()
-# return render(request, 'catalog/add_mobtel.html', {'form': form})
+
+def add_feedback(request, ct_model, slug):
+    content_type = ContentType.objects.get(model=ct_model)
+    good = content_type.model_class().objects.get(slug=slug)
+    if request.method == 'POST':
+        form = FeedBackForm(request.POST)
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.author = request.user
+            feedback.content_type = content_type
+            feedback.object_id = good.id
+            feedback.save()
+            return redirect('feedback_list', ct_model=ct_model, slug=slug)
+    else:
+        form = FeedBackForm()
+    return render(request, 'catalog/add_feedback.html', {'form': form, 'ct_model': ct_model, 'slug': slug, 'good': good})
+
+
+def feedback_list(request, ct_model, slug):
+    content_type = ContentType.objects.get(model=ct_model)
+    good = content_type.model_class().objects.get(slug=slug)
+    feedbacks = Feedback.objects.all().filter(object_id=good.id, content_type=content_type)
+    return render(request, 'catalog/feedback_list.html', {'feedbacks': feedbacks, 'good': good})

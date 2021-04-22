@@ -218,3 +218,19 @@ class Goods_in_order(models.Model):
     def __str__(self):
         return f'{self.order}--{self.content_object.title}--{self.count}'
 
+
+class Feedback(models.Model):
+    author = models.ForeignKey('auth.User', on_delete=models.CASCADE, blank=True, null=True, verbose_name='Автор')
+    title = models.CharField(max_length=250, verbose_name='Название')
+    text = models.TextField(verbose_name='Текст')
+    dignities = models.TextField(verbose_name='Достоинства')
+    disadvantages = models.TextField(verbose_name='Недостатки')
+    created_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    estimation = models.PositiveIntegerField(default=3, verbose_name='Оценка')
+
+
+    def __str__(self):
+        return f'{self.author}--{self.title}--{self.estimation}'
