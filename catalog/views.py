@@ -10,6 +10,7 @@ from catalog.mixins import BasketMixin
 from catalog.forms import OrderForm, MobtelForm, TelevisionForm, FeedBackForm
 import statistics
 
+
 def main(request):
     return render(request, 'main.html', {})
 
@@ -46,14 +47,43 @@ class GoodDetailView(DetailView):
         else:
             context['estimation'] = 3
         return context
-#.filter(object_id=good.id))
+
 
 def category_first(request):
-    category_electronics = CategoryFirst.objects.get(name='Электроника').category_second.all()
-    category_comps = CategoryFirst.objects.get(name='Компьютеры и сети').category_second.all()
+    category_electronics = CategoryFirst.objects.get_or_create(name='Электроника',
+                                                               slug='electronics')[0].category_second.all()
+    if CategoryFirst.objects.get_or_create(name='Электроника', slug='electronics')[1]:
+        mobtel_accessories = CategorySecond.objects.create(name='Мобильные телефоны и аксессуары',
+                                                           slug='mobtel_accessories',
+                                                           cat_second_cat_first=category_electronics)
+        television_video = CategorySecond.objects.create(name='Телевидение и видео', slug='television_video',
+                                                         cat_second_cat_first=category_electronics)
+        CategoryGoods.objects.create(name='Мобильные телефоны', slug='mobtel',
+                                     cat_second_cat_first=mobtel_accessories)
+        CategoryGoods.objects.create(name='Наушники', slug='Headphones',
+                                     cat_second_cat_first=mobtel_accessories)
+        CategoryGoods.objects.create(name='Телевизоры', slug='television',
+                                     cat_second_cat_first=television_video)
+        CategoryGoods.objects.create(name='ТВ-антенны', slug='tv_antennas',
+                                     cat_second_cat_first=television_video)
+    category_comps = CategoryFirst.objects.get_or_create(name='Компьютеры и сети',
+                                                         slug='computers_networks')[0].category_second.all()
+    if CategoryFirst.objects.get_or_create(name='Компьютеры и сети', slug='computers_networks')[1]:
+        laptops_computers_monitors = CategorySecond.objects.get_or_create(name='Ноутбуки, компьютеры, моноторы',
+                                                                          slug='laptops_computers_monitors',
+                                                                          cat_second_cat_first=category_comps)
+        components = CategorySecond.objects.get_or_create(name='Комплектующие', slug='components',
+                                                          cat_second_cat_first=category_comps)
+        CategoryGoods.objects.create(name='Ноутбуки', slug='laptops',
+                                     cat_second_cat_first=laptops_computers_monitors)
+        CategoryGoods.objects.create(name='Компьютреы', slug='computers',
+                                     cat_second_cat_first=laptops_computers_monitors)
+        CategoryGoods.objects.create(name='Видеокарты', slug='video_cards',
+                                     cat_second_cat_first=components)
+        CategoryGoods.objects.create(name='Процессоры', slug='processors',
+                                     cat_second_cat_first=components)
     return render(request, 'catalog/category_first.html', {'category_electronics': category_electronics,
-                                                           'category_comps': category_comps
-                                                           })
+                                                           'category_comps': category_comps})
 
 
 def category_name(request, slug):
@@ -212,7 +242,8 @@ def add_feedback(request, ct_model, slug):
             return redirect('feedback_list', ct_model=ct_model, slug=slug)
     else:
         form = FeedBackForm()
-    return render(request, 'catalog/add_feedback.html', {'form': form, 'ct_model': ct_model, 'slug': slug, 'good': good})
+    return render(request, 'catalog/add_feedback.html',
+                  {'form': form, 'ct_model': ct_model, 'slug': slug, 'good': good})
 
 
 def feedback_list(request, ct_model, slug):
