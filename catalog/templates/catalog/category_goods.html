@@ -6,7 +6,6 @@ Category_goods
 {% endblock %}
 
 {% block content %}
-{% if category_goods %}
  <div class="w-50 p-3 mt-5 mb-5" style="margin-left: 50px">
      <h2>{{ category_name }}</h2><br>
 {% if user  %}
@@ -19,6 +18,8 @@ Category_goods
     </form>
  </div>
 {% endif %}
+{% if category_goods %}
+
 
 {% for good in category_goods %}
 <a href="{% url 'good_detail' ct_model=slug slug=good.slug %}">{{ good.title }}</a><br>
