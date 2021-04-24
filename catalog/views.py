@@ -49,47 +49,7 @@ class GoodDetailView(DetailView):
         return context
 
 
-def category_first(request):
-
-    if CategoryFirst.objects.get_or_create(name='Электроника', slug='electronics')[1]:
-        categoryelectronic = CategoryFirst.objects.get(name='Электроника', slug='electronics')
-        mobtel_accessories = CategorySecond.objects.create(name='Мобильные телефоны и аксессуары',
-                                                           slug='mobtel_accessories',
-                                                           cat_second_cat_first=categoryelectronic)
-        television_video = CategorySecond.objects.create(name='Телевидение и видео', slug='television_video',
-                                                         cat_second_cat_first=categoryelectronic)
-        CategoryGoods.objects.create(name='Мобильные телефоны', slug='mobtel',
-                                     cat_goods_cat_second=mobtel_accessories)
-        CategoryGoods.objects.create(name='Наушники', slug='Headphones',
-                                     cat_goods_cat_second=mobtel_accessories)
-        CategoryGoods.objects.create(name='Телевизоры', slug='television',
-                                     cat_goods_cat_second=television_video)
-        CategoryGoods.objects.create(name='ТВ-антенны', slug='tv_antennas',
-                                     cat_goods_cat_second=television_video)
-    category_electronics = CategoryFirst.objects.get(name='Электроника',
-                                                               slug='electronics').category_second.all()
-    if CategoryFirst.objects.get_or_create(name='Компьютеры и сети', slug='computers_networks')[1]:
-        categorycomp = CategoryFirst.objects.get(name='Компьютеры и сети', slug='computers_networks')
-        laptops_computers_monitors = CategorySecond.objects.create(name='Ноутбуки, компьютеры, моноторы',
-                                                                          slug='laptops_computers_monitors',
-                                                                          cat_second_cat_first=categorycomp)
-        components = CategorySecond.objects.create(name='Комплектующие', slug='components',
-                                                          cat_second_cat_first=categorycomp)
-        CategoryGoods.objects.create(name='Ноутбуки', slug='laptops',
-                                     cat_goods_cat_second=laptops_computers_monitors)
-        CategoryGoods.objects.create(name='Компьютреы', slug='computers',
-                                     cat_goods_cat_second=laptops_computers_monitors)
-        CategoryGoods.objects.create(name='Видеокарты', slug='video_cards',
-                                     cat_goods_cat_second=components)
-        CategoryGoods.objects.create(name='Процессоры', slug='processors',
-                                     cat_goods_cat_second=components)
-    category_comps = CategoryFirst.objects.get(name='Компьютеры и сети',
-                                                   slug='computers_networks').category_second.all()
-    return render(request, 'catalog/category_first.html', {'category_electronics': category_electronics,
-                                                           'category_comps': category_comps})
-
-
-def category_name(request, slug):
+def category_name(slug):
     cat = {
         'Мобильные телефоны': 'mobtel__count',
         'Телевизоры': 'television__count',
@@ -110,7 +70,55 @@ def category_name(request, slug):
                     category_name.append(dict(name=k['name'], slug=k['slug'], count=k[cat[i.name]]))
                 else:
                     category_name.append(dict(name=k['name'], slug=k['slug'], count=0))
-    return render(request, 'catalog/category_name.html', {'category_name': category_name})
+    return  category_name
+
+
+def category_first(request):
+    if CategoryFirst.objects.get_or_create(name='Электроника', slug='electronics')[1]:
+        categoryelectronic = CategoryFirst.objects.get(name='Электроника', slug='electronics')
+        mobtel_accessories = CategorySecond.objects.create(name='Мобильные телефоны и аксессуары',
+                                                           slug='mobtel_accessories',
+                                                           cat_second_cat_first=categoryelectronic)
+        television_video = CategorySecond.objects.create(name='Телевидение и видео', slug='television_video',
+                                                         cat_second_cat_first=categoryelectronic)
+        CategoryGoods.objects.create(name='Мобильные телефоны', slug='mobtel',
+                                     cat_goods_cat_second=mobtel_accessories)
+        CategoryGoods.objects.create(name='Наушники', slug='Headphones',
+                                     cat_goods_cat_second=mobtel_accessories)
+        CategoryGoods.objects.create(name='Телевизоры', slug='television',
+                                     cat_goods_cat_second=television_video)
+        CategoryGoods.objects.create(name='ТВ-антенны', slug='tv_antennas',
+                                     cat_goods_cat_second=television_video)
+    category_electronics = CategoryFirst.objects.get(name='Электроника',
+                                                     slug='electronics').category_second.all()
+    if CategoryFirst.objects.get_or_create(name='Компьютеры и сети', slug='computers_networks')[1]:
+        categorycomp = CategoryFirst.objects.get(name='Компьютеры и сети', slug='computers_networks')
+        laptops_computers_monitors = CategorySecond.objects.create(name='Ноутбуки, компьютеры, моноторы',
+                                                                   slug='laptops_computers_monitors',
+                                                                   cat_second_cat_first=categorycomp)
+        components = CategorySecond.objects.create(name='Комплектующие', slug='components',
+                                                   cat_second_cat_first=categorycomp)
+        CategoryGoods.objects.create(name='Ноутбуки', slug='laptops',
+                                     cat_goods_cat_second=laptops_computers_monitors)
+        CategoryGoods.objects.create(name='Компьютреы', slug='computers',
+                                     cat_goods_cat_second=laptops_computers_monitors)
+        CategoryGoods.objects.create(name='Видеокарты', slug='video_cards',
+                                     cat_goods_cat_second=components)
+        CategoryGoods.objects.create(name='Процессоры', slug='processors',
+                                     cat_goods_cat_second=components)
+    category_comps = CategoryFirst.objects.get(name='Компьютеры и сети',
+                                               slug='computers_networks').category_second.all()
+    category_name_mobtel_accessories = category_name('mobtel_accessories')
+    category_name_television_video = category_name('television_video')
+    category_name_laptops_computers_monitors = category_name('laptops_computers_monitors')
+    category_name_components = category_name('components')
+    return render(request, 'catalog/category_first.html', {
+                               'category_electronics': category_electronics,
+                               'category_comps': category_comps,
+                               'category_name_mobtel_accessories': category_name_mobtel_accessories,
+                               'category_name_television_video': category_name_television_video,
+                               'category_name_laptops_computers_monitors': category_name_laptops_computers_monitors,
+                               'category_name_components': category_name_components})
 
 
 def category_goods(request, slug):
@@ -120,7 +128,9 @@ def category_goods(request, slug):
         model = globals().get(mod[slug].__name__)
         form = form[slug]
         category_goods = model.objects.all()
+
         category_name = CategoryGoods.objects.get(slug=slug)
+        print(category_name)
         if request.method == 'POST':
             form = {'mobtel': MobtelForm, 'television': TelevisionForm}
             form = form[slug](request.POST, request.FILES)
@@ -129,6 +139,7 @@ def category_goods(request, slug):
                 good.product_category = category_name
                 good.save()
                 return redirect('good_detail', ct_model=slug, slug=good.slug)
+        print(request.user)
         if str(request.user) == 'admin':
             user = True
         else:

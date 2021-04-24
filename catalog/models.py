@@ -90,7 +90,7 @@ class Good(models.Model):
     title = models.CharField(max_length=250, verbose_name='Название')
     slug = models.SlugField(unique=True)
     image = models.ImageField(null=True, blank=True, upload_to='images/', verbose_name='Изображение')
-    about = models.CharField(max_length=50, verbose_name='Описание товара')
+    about = models.CharField(max_length=250, verbose_name='Описание товара')
     price = models.DecimalField(max_digits=6, decimal_places=2, default=Decimal("0.00"), verbose_name='Цена')
     product_category = models.ForeignKey(CategoryGoods, on_delete=models.CASCADE, blank=True,
                                          null=True)
@@ -167,7 +167,7 @@ class Goods_in_basket(models.Model):
                                       default=Decimal("0.00"), verbose_name='Общая цена')
 
     def __str__(self):
-        return f'{self.basket}--{self.content_object.title}--{self.count}'
+        return f'{self.basket}--{self.count}'
 
     def save(self, *args, **kwargs):
         self.total_price = self.count * self.content_object.price
@@ -216,7 +216,7 @@ class Goods_in_order(models.Model):
                                       default=Decimal("0.00"), verbose_name='Общая цена')
 
     def __str__(self):
-        return f'{self.order}--{self.content_object.title}--{self.count}'
+        return f'{self.order}--{self.count}'
 
 
 class Feedback(models.Model):

@@ -4,7 +4,63 @@
 Category_first
 {% endblock %}
 
+
 {% block content %}
+
+<style>
+    * {
+        box-sizing: border-box
+    }
+
+    body {
+        font-family: "Lato", sans-serif;
+    }
+
+    /* Style the tab */
+    .tab {
+        float: left;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+        width: 30%;
+        height: 200px;
+    }
+
+    /* Style the buttons inside the tab */
+    .tab button {
+        display: block;
+        background-color: inherit;
+        color: #1747d5;
+        padding: 22px 16px;
+        width: 100%;
+        border: none;
+        outline: none;
+        text-align: left;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 17px;
+    }
+
+    /* Change background color of buttons on hover */
+    .tab button:hover {
+        background-color: #d5d2d2;
+    }
+
+    /* Create an active/current "tab button" class */
+    /*.tab button.active {*/
+    /*    background-color: #f5f3f3;*/
+    /*}*/
+
+    /* Style the tab content */
+    /*.tabcontent {*/
+    /*    float: left;*/
+    /*    padding: 0px 12px;*/
+    /*    border: 1px solid #ccc;*/
+    /*    width: 70%;*/
+    /*    border-left: none;*/
+    /*    height: 300px;*/
+    /*}*/
+</style>
+
 <div class="">
     <div>
         <ul class="nav nav-tabs" role="tablist">
@@ -27,52 +83,67 @@ Category_first
         <!-- Tab panes -->
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="description">
-                {% for category in category_electronics %}
-                <br>
-                <a href="{% url 'category_name' slug=category.slug %}">{{ category.name }}</a><br>
-                <br>
-                {% endfor %}
 
+                <div class="tab">
+                    <button class="tablinks" onclick="openCity(event, 'Lond')" id="defaultOpen">Мобильные телефоны и аксессуары</button>
+                    <button class="tablinks" onclick="openCity(event, 'Par')">Телевидение и видео</button>
+                </div>
+                <div id="Lond" class="tabcontent">
+                                {% for category in category_name_mobtel_accessories %}
+                <br>
+                <a href="{% url 'category_goods' slug=category.slug %}">{{ category.name }}  ({{ category.count }})</a><br>
+                {% endfor %}
+                </div>
+                <div id="Par" class="tabcontent">
+                                {% for category in category_name_television_video %}
+                <br>
+                <a href="{% url 'category_goods' slug=category.slug %}">{{ category.name }}  ({{ category.count }})</a><br>
+                {% endfor %}
+                </div>
             </div>
             <div role="tabpanel" class="tab-pane" id="delivery">
-                {% for category in category_comps %}
+                <div class="tab">
+                    <button class="tablinks" onclick="openCity(event, 'London')" id="defaultOpens">Ноутбуки, компьютеры, моноторы</button>
+                    <button class="tablinks" onclick="openCity(event, 'Paris')">Комплектующие</button>
+                </div>
+                <div id="London" class="tabcontent">
+                                {% for category in category_name_laptops_computers_monitors %}
                 <br>
-                <a href="{% url 'category_name' slug=category.slug %}">{{ category.name }}</a><br>
-                <br>
+                <a href="{% url 'category_goods' slug=category.slug %}">{{ category.name }}  ({{ category.count }})</a><br>
                 {% endfor %}
+                </div>
+                <div id="Paris" class="tabcontent">
+                                {% for category in category_name_components %}
+                <br>
+                <a href="{% url 'category_goods' slug=category.slug %}">{{ category.name }}  ({{ category.count }})</a><br>
+                {% endfor %}
+                </div>
             </div>
             <div role="tabpanel" class="tab-pane" id="messages">
-<!--                <ul class="nav nav-tabs ">-->
-<!--                    <li class="active"><a data-toggle="pill" href="#home">Главная</a></li>-->
-<!--                    <li><a data-toggle="pill" href="#prod">Продукция</a></li>-->
-<!--                    <li><a data-toggle="pill" href="#sale">Акции</a></li>-->
-<!--                    <li><a data-toggle="pill" href="#cont">Контакты</a></li>-->
-<!--                </ul>-->
 
-<!--                <div class="tab-content">-->
-<!--                    <div id="home" class="tab-pane in active">-->
-<!--                        <h3>Главная</h3>-->
-<!--                        <p>Описание преимуществ компании.</p>-->
-<!--                    </div>-->
-<!--                    <div id="prod" class="tab-pane">-->
-<!--                        <h3>Продукция</h3>-->
-<!--                        <p>Каталоги имеющейся продукции.</p>-->
-<!--                    </div>-->
-<!--                    <div id="sale" class="tab-pane ">-->
-<!--                        <h3>Акции2</h3>-->
-<!--                        <p>Список действующих акций.</p>-->
-<!--                    </div>-->
-<!--                    <div id="cont" class="tab-pane">-->
-<!--                        <h3>Контакты</h3>-->
-<!--                        <p>Наши контакты</p>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <script>
+                    function openCity(evt, cityName) {
+                        var i, tabcontent, tablinks;
+                        tabcontent = document.getElementsByClassName("tabcontent");
+                        for (i = 0; i < tabcontent.length; i++) {
+                            tabcontent[i].style.display = "none";
+                        }
+                        tablinks = document.getElementsByClassName("tablinks");
+                        for (i = 0; i < tablinks.length; i++) {
+                            tablinks[i].className = tablinks[i].className.replace(" active", "");
+                        }
+                        document.getElementById(cityName).style.display = "block";
+                        evt.currentTarget.className += " active";
+                    }
+
+                    // Get the element with id="defaultOpen" and click on it
+                    document.getElementById("defaultOpen").click();
+                </script>
             </div>
         </div>
     </div>
 
 </div>
-</div>
-{% endblock %}
 
+{% endblock %}
 

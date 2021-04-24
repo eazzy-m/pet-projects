@@ -6,26 +6,53 @@ Category_goods
 {% endblock %}
 
 {% block content %}
- <div class="w-50 p-3 mt-5 mb-5" style="margin-left: 50px">
-     <h2>{{ category_name }}</h2><br>
-{% if user  %}
-
-     <h3>Добавте товар</h3><br>
-<form action="" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-{{ form|crispy }}
-    <input type="submit" class="btn btn-success btn-block mb-3" value="добавить товар">
-    </form>
- </div>
-{% endif %}
-{% if category_goods %}
-
-
+{% if category_name %}
+<p class="text-center"><big><mark>{{ category_name }}</mark></big></p>
+<br>
+<div class="row">
+    <div class="col-md-6 ">
 {% for good in category_goods %}
-<a href="{% url 'good_detail' ct_model=slug slug=good.slug %}">{{ good.title }}</a><br>
+
+<div class="card" style="width: 50rem; margin-left: 30px">
+    <div class="card-header" style="background: #f3eac4">
+        <a href="{% url 'good_detail' ct_model=slug slug=good.slug %}">{{ good.title }}</a>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4 ">
+                {% if good.image %}
+                <img src="{{good.image.url}}" style="max-height:80px">
+                {% endif %}
+            </div>
+            <div class="col-md-3 ">
+                <p class="card-text">Описание: </p><br><br>
+                <p class="card-text">Цена: </p>
+            </div>
+            <div class="col-md-5 ">
+                <p class="card-text">{{ good.about}}</p>
+                <p class="card-text">{{ good.price}} р</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <br>
 <br>
 {% endfor %}
+    </div>
+        {% if user %}
+    {% if form %}
+<div class="col-md-4 " style="margin-left: 30px">
+    <h3>Добавте товар</h3><br>
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input type="submit" class="btn btn-success btn-block mb-3" value="добавить товар">
+    </form>
+ </div>
+{% endif %}
+{% endif %}
+ </div>
 {% else %}
 НЕТ ТОВАРОВ
 {% endif %}
