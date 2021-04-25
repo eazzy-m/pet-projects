@@ -3,15 +3,40 @@ from django.views.generic import DetailView, View
 from django.contrib.auth.models import User
 from django.contrib import messages
 from catalog.models import MobTel, Television, Basket, Goods_in_basket, \
-    CategoryFirst, CategorySecond, CategoryGoods, Good, Order, Goods_in_order, Feedback
+    CategoryFirst, CategorySecond, CategoryGoods, Good, Order, Goods_in_order, Feedback, Course
 from django.http import HttpResponseRedirect
 from django.contrib.contenttypes.models import ContentType
 from catalog.mixins import BasketMixin
 from catalog.forms import OrderForm, MobtelForm, TelevisionForm, FeedBackForm
 import statistics
+import requests
+import time
+
+# def course():
+#     while True:
+        # time.sleep(60)
+
+
+
 
 
 def main(request):
+    url = 'https://www.nbrb.by/api/exrates/rates/145'
+    res = requests.get(url).json()['Cur_OfficialRate']
+    if not Course.objects.exists():
+        cours = Course.objects.create()
+        cours.course = res
+        cours.save()
+    else:
+        cours = Course.objects.first()
+        cours.course = res
+        cours.save()
+    models = [MobTel, Television]
+    for j in models:
+        for i in j._base_manager.all():
+            i.price_in_d = float(i.price) / res
+            i.save()
+    messages.add_message(request, messages.INFO, "Курс доллара обновлен")
     return render(request, 'main.html', {})
 
 
@@ -130,16 +155,18 @@ def category_goods(request, slug):
         category_goods = model.objects.all()
 
         category_name = CategoryGoods.objects.get(slug=slug)
-        print(category_name)
+
         if request.method == 'POST':
+            cours = Course.objects.first()
             form = {'mobtel': MobtelForm, 'television': TelevisionForm}
             form = form[slug](request.POST, request.FILES)
             if form.is_valid():
                 good = form.save(commit=False)
                 good.product_category = category_name
+                good.price_in_d = float(good.price) / cours.course
                 good.save()
+                messages.add_message(request, messages.INFO, "Товар добавлен")
                 return redirect('good_detail', ct_model=slug, slug=good.slug)
-        print(request.user)
         if str(request.user) == 'admin':
             user = True
         else:
@@ -176,7 +203,7 @@ class DelGoodInBasket(BasketMixin, View):
             basket=self.basket, content_type=content_type, object_id=good.id)
         good_in_basket.delete()
         self.basket.save()
-        messages.add_message(request, messages.INFO, "Товар удален")
+        messages.add_message(request, messages.WARNING, "Товар удален")
         return HttpResponseRedirect('/basket/')
 
 
@@ -230,6 +257,7 @@ class AddOrderView(BasketMixin, View):
                                               total_price=go.total_price)
             goods_in_basket.delete()
             self.basket.save()
+            messages.add_message(request, messages.INFO, "Заказ принят")
             return HttpResponseRedirect('/orders/')
 
 
@@ -253,6 +281,7 @@ def add_feedback(request, ct_model, slug):
             feedback.content_type = content_type
             feedback.object_id = good.id
             feedback.save()
+            messages.add_message(request, messages.INFO, "Отзыв добавлен")
             return redirect('feedback_list', ct_model=ct_model, slug=slug)
     else:
         form = FeedBackForm()

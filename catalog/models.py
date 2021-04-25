@@ -6,7 +6,6 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 
-
 User = get_user_model()
 
 
@@ -91,7 +90,9 @@ class Good(models.Model):
     slug = models.SlugField(unique=True)
     image = models.ImageField(null=True, blank=True, upload_to='images/', verbose_name='Изображение')
     about = models.CharField(max_length=250, verbose_name='Описание товара')
-    price = models.DecimalField(max_digits=6, decimal_places=2, default=Decimal("0.00"), verbose_name='Цена')
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0.00"), verbose_name='Цена')
+    price_in_d = models.DecimalField(max_digits=8, decimal_places=2, default=Decimal("0.00"),
+                                     verbose_name='Цена в долларах')
     product_category = models.ForeignKey(CategoryGoods, on_delete=models.CASCADE, blank=True,
                                          null=True)
 
@@ -204,10 +205,9 @@ class Order(models.Model):
         return f'{self.created_at, self.user}'
 
 
-
 class Goods_in_order(models.Model):
     order = models.ForeignKey('Order', on_delete=models.CASCADE, verbose_name='Заказ',
-                               related_name='goods_in_order')
+                              related_name='goods_in_order')
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
@@ -231,6 +231,12 @@ class Feedback(models.Model):
     content_object = GenericForeignKey('content_type', 'object_id')
     estimation = models.PositiveIntegerField(default=3, verbose_name='Оценка')
 
-
     def __str__(self):
         return f'{self.author}--{self.title}--{self.estimation}'
+
+
+class Course(models.Model):
+    course = models.FloatField(default=0, verbose_name='Курс')
+
+    def __str__(self):
+        return f'{self.course}'

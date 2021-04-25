@@ -7,16 +7,7 @@ Basket
 {% block content %}
 {% if goods_in_basket %}
 <h3 class="text-center mt-5 mb-5">Корзина </h3>
-{% if messages %}
-{% for message in messages %}
-<div class="alert alert-success alert-dismissible show" role="alert">
-  {{message}}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-{% endfor %}
-{% endif %}
+
 <table class="table">
     <thead>
     <tr>

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
         {% load bootstrap3 %}
+{% load common_tags %}
     <script src="{% bootstrap_jquery_url %}"></script>
     {% bootstrap_javascript %}
     {% bootstrap_css %}
@@ -22,13 +23,16 @@
 <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #eabc34;">
     <div class="container-fluid">
 
-        <a class="nav-link active" href="{% url 'category_first' %}" style="text-decoration: none; color: #020000">Каталог</a>
+        <a class="nav-link active" href="{% url 'main' %}" style="text-decoration: none; color: #020000">Главная</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'category_first' %}">Каталог</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="#">Новости</a>
                 </li>
@@ -60,6 +64,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'orders' %}" >Заказы<span class="badge-pill badge-danger"></span></a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="" >$<span class="badge-pill badge-danger">{% show_top_menu %}</span></a>
+                </li>
             </ul>
             <form class="d-flex">
                 <input class="form-control me-2" type="search" placeholder="поиск" aria-label="Search">
@@ -78,10 +85,21 @@
         border-radius: 5px; /* Радиус скругления */
     }
 </style>
-
-
+<div class="text-center" style="width: 300px;margin-left: 100px">
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-success alert-dismissible show" role="alert">
+  {{message}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endfor %}
+{% endif %}
+</div>
 {% block content %}
-There is no any content for you
+
+
 {% endblock %}
 </div>
 </body>

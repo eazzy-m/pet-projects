@@ -16,13 +16,13 @@ class MobtelForm(forms.ModelForm):
     class Meta:
         model = MobTel
         fields = '__all__'
-        widgets = {'product_category': forms.HiddenInput()}
+        widgets = {'product_category': forms.HiddenInput(), 'price_in_d': forms.HiddenInput()}
 
 class TelevisionForm(forms.ModelForm):
     class Meta:
         model = Television
         fields = '__all__'
-        widgets = {'product_category': forms.HiddenInput()}
+        widgets = {'product_category': forms.HiddenInput(), 'price_in_d': forms.HiddenInput()}
 
 
 
