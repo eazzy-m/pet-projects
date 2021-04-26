@@ -1,0 +1,1 @@
+web: gunicorn z06_onl_server.wsgi --log-file -

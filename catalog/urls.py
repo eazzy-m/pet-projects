@@ -11,7 +11,6 @@ urlpatterns = [
     path('category_goods/<str:slug>/', category_goods, name='category_goods'),
     path('category_first/', category_first, name='category_first'),
     path('basket/', BasketView.as_view(), name='basket'),
-    # path('weather/', weather, name='weather'),
     path('add_good_in_basket/<str:ct_model>/<str:slug>/', AddGoodInBasket.as_view(), name='add_good_in_basket'),
     path('del_good_in_basket/<str:ct_model>/<str:slug>/', DelGoodInBasket.as_view(), name='del_good_in_basket'),
     path('making_order/', MakingOrderView.as_view(), name='making_order'),

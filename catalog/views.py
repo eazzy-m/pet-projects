@@ -10,14 +10,6 @@ from catalog.mixins import BasketMixin
 from catalog.forms import OrderForm, MobtelForm, TelevisionForm, FeedBackForm
 import statistics
 import requests
-import time
-
-# def course():
-#     while True:
-        # time.sleep(60)
-
-
-
 
 
 def main(request):
