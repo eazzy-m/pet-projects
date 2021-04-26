@@ -1,0 +1,31 @@
+{% extends 'news/base_news.html' %}
+{% block content %}
+<div class="body">
+    <div class="row" style="padding-left: 30px">
+        {% for nbw in news_by_views %}
+        <div class="column_rating" >
+            <img  style="filter: contrast(70%)" src="{{ nbw.image.url }}" width="310" height="200">
+            <div class="imgtext_rating">
+                <a style="color: white" href="{{ nbw.get_absolute_url }}">{{nbw.title}}</a><br>
+                <i class="fa fa-eye"></i>{{nbw.views}}&nbsp;&nbsp;
+                <i class="fa fa-comment"></i>{{nbw.count}}
+                &nbsp;&nbsp;{{nbw.created_date}} &nbsp;&nbsp;
+            </div>
+        </div>
+        {% endfor %}<br>
+    </div>
+</div>
+<div class="body">
+    {% for n in news %}
+    <div class="column" >
+        <img src="{{ n.image.url }}" width="400" height="200">
+        <a href="{{ n.get_absolute_url }}">{{n.title}}</a>
+        {% autoescape on %}
+        {{n.text|linebreaks|truncatewords:15}}
+        {% endautoescape %}
+        <div><i class="fa fa-eye"></i>{{n.views}}&nbsp;&nbsp;<i class="fa fa-comment"></i>{{n.count}}</div>
+        <div>Дата публикации:{{n.created_date}}</div>
+    </div>
+{% endfor %}
+</div>
+{% endblock %}

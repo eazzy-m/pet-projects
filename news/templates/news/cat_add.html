@@ -1,0 +1,13 @@
+{% extends 'news/base_news.html' %}
+
+{% block content %}
+    <form style="padding: 10px 50px" action="{% url 'category_add' %}" class="form-horizontal" method="POST">
+        <div class="form-group">
+        {% csrf_token %}
+        <div class="col-xs-10">
+        <p class="form-control-static">{{ form.as_p }}</p>
+        <button type="submit" >Сохранить</button>
+        </div>
+        </div>
+      </form>
+{% endblock %}
