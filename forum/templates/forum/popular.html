@@ -1,0 +1,21 @@
+{% extends 'forum/base_forum.html' %}
+{% load comments_tags %}
+{% block title %}
+Popular
+{% endblock %}
+
+
+{% block content %}
+<a href="{% url 'topic_view' %}">На главную</a><br>
+<h6>Вы зашли как {{ user }}</h6>
+<hr>
+
+{% for pops in pop %}
+
+{{ pops.title }}<a href="{{ pops.get_absolute_url }}">Обсудить</a>-----------{{ pops.cnt }}<br>
+<hr>
+
+{% endfor %}
+<hr>
+<hr>
+{% endblock %}

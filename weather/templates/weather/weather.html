@@ -1,0 +1,29 @@
+{% extends 'main.html' %}
+
+{% block title %}
+Weather
+{% endblock %}
+
+
+{% block content %}
+{% for info in all_info %}
+<b>Город:</b>{{ info.city }}<br>
+<b>Температура:</b> {{ info.temp }}<sup>o</sup><br>
+<img src="http://openweathermap.org/img/w/{{ info.icon }}.png" alt="Фото погоды"><br>
+<hr>
+{% endfor %}
+
+{% if city_info %}
+<b>Город:</b>{{ city_info.city }}<br>
+<b>Температура:</b> {{ city_info.temp }}<sup>o</sup><br>
+<img src="http://openweathermap.org/img/w/{{ city_info.icon }}.png" alt="Фото погоды"><br>
+{% else %}
+Введите название города, погода которого Вас интересует:<br>
+{% endif %}
+
+<form action="{% url 'index' %}" method="post">
+    {% csrf_token %}
+    {{ form.name }}
+    <input type="submit" value="submit">
+</form>
+{% endblock %}

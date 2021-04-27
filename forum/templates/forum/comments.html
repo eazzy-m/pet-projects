@@ -1,0 +1,43 @@
+{% extends 'forum/base_forum.html' %}
+{% load comments_tags %}
+{% block title %}
+Comments
+{% endblock %}
+
+
+{% block content %}
+<a href="{% url 'topic_view' %}">На главную форума</a><br>
+
+<hr>
+<h6>Вы зашли как {{ user }}</h6>
+{% for comment in comments %}
+    <div>
+
+    <h3>Автор</h3>{{ comment.author }}
+        {% if comment.text_mutual %}
+        <h4>Комментарий к комментарию</h4> <b> {{ comment.text_mutual }}</b>
+
+        {% endif %}
+         <h4>Текст</h4>{{ comment.text }}
+        <h5>Дата публикации</h5>
+        {{comment.created_at}}<br>
+
+<a href="{% url 'add_mute' comment_pk=comment.pk topic_pk=topic_pk %}">Комментировать</a>
+        <hr />
+
+    </div>
+{% endfor %}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+{% if user.is_authenticated %}
+
+<form action="{% url 'add_comment' topic_pk=topic_pk  %}" method="post">
+    {% csrf_token %}
+    {{ form.text }}
+
+    <input type="submit" value="submit">
+</form>
+{% else %}
+Для комментирования записей, вам необходимо авторизироваться <a href=""><button>Авторизация</button></a>
+Если вы не зарегистрированы, сделайте это! <a href="{% url 'register' %}"><button>Регистрация</button></a><br>
+{% endif %}
+{% endblock %}
