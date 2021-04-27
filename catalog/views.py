@@ -52,7 +52,11 @@ class GoodDetailView(DetailView):
         context = super(GoodDetailView, self).get_context_data(**kwargs)
         # Добавляем новую переменную к контексту и инициализируем её некоторым значением
         context['some_data'] = {i.verbose_name.title().capitalize(): i.value_from_object(kwargs['object']) for i in
-                                self.model._meta.get_fields()[7:]}
+                                self.model._meta.get_fields()[8:]}
+        if context['some_data']['Наличие на складе']:
+            context['some_data']['Наличие на складе'] = 'Да'
+        else:
+            context['some_data']['Наличие на складе'] = 'Нет'
         ct_model = kwargs['object'].product_category.slug
         good_slug = kwargs['object'].slug
         content_type = ContentType.objects.get(model=ct_model)
@@ -87,7 +91,7 @@ def category_name(slug):
                     category_name.append(dict(name=k['name'], slug=k['slug'], count=k[cat[i.name]]))
                 else:
                     category_name.append(dict(name=k['name'], slug=k['slug'], count=0))
-    return  category_name
+    return category_name
 
 
 def category_first(request):
@@ -130,12 +134,12 @@ def category_first(request):
     category_name_laptops_computers_monitors = category_name('laptops_computers_monitors')
     category_name_components = category_name('components')
     return render(request, 'catalog/category_first.html', {
-                               'category_electronics': category_electronics,
-                               'category_comps': category_comps,
-                               'category_name_mobtel_accessories': category_name_mobtel_accessories,
-                               'category_name_television_video': category_name_television_video,
-                               'category_name_laptops_computers_monitors': category_name_laptops_computers_monitors,
-                               'category_name_components': category_name_components})
+        'category_electronics': category_electronics,
+        'category_comps': category_comps,
+        'category_name_mobtel_accessories': category_name_mobtel_accessories,
+        'category_name_television_video': category_name_television_video,
+        'category_name_laptops_computers_monitors': category_name_laptops_computers_monitors,
+        'category_name_components': category_name_components})
 
 
 def category_goods(request, slug):
