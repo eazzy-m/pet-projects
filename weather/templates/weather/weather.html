@@ -18,12 +18,15 @@ Weather
 <b>Температура:</b> {{ city_info.temp }}<sup>o</sup><br>
 <img src="http://openweathermap.org/img/w/{{ city_info.icon }}.png" alt="Фото погоды"><br>
 {% else %}
-Введите название города, погода которого Вас интересует:<br>
+
 {% endif %}
 
 <form action="{% url 'index' %}" method="post">
     {% csrf_token %}
-    {{ form.name }}
+    <div class="form-group">
+    <label for="{{ form.name.id_for_label }}" class="form-label">Название города: </label>
+        {{ form.name }}
+    </div>
     <input type="submit" value="submit">
 </form>
 {% endblock %}

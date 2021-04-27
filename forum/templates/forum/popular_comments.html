@@ -1,5 +1,5 @@
 {% extends 'forum/base_forum.html' %}
-{% load comments_tags %}
+
 {% block title %}
 Popular
 {% endblock %}
@@ -18,4 +18,50 @@ Popular
         <h5>Дата публикации</h5>
         {{comment.created_at}}<br>
     </div>
+
+{% if page_obj.has_other_pages %}
+<nav aria-label="...">
+  <ul class="pagination">
+
+      {% if page_obj.number > 3 %}
+        <li class="page-item">
+                <a class="page-link" href="?page=1">1</a>
+            </li>
+      {% endif %}
+
+      {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" tabindex="-1">PREVIOUS</a>
+            </li>
+        {% endif %}
+
+      {% for p in page_obj.paginator.page_range %}
+            {% if page_obj.number == p %}
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" href="?page={{ p }}">{{ p }}<span class="sr-only"></span></a>
+                </li>
+            {% elif p > page_obj.number|add:-3 and p < page_obj.number|add:3 %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+                </li>
+            {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">NEXT</a>
+            </li>
+      {% endif %}
+
+      {% if page_obj.end_index|add:-3 < page_obj.paginator.num_pages  %}
+      <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+            </li>
+        {% endif %}
+
+  </ul>
+</nav>
+{% endif %}
+
 {% endblock %}
+

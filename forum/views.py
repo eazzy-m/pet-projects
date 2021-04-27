@@ -6,11 +6,12 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.db.models import Count
 
+
 class TopicViews(ListView):
     model = Topic
     context_object_name = 'topics'
     template_name = 'forum/topics.html'
-    # paginate_by = 20
+    paginate_by = 10
     form = TopicForm()
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -19,13 +20,16 @@ class TopicViews(ListView):
         context['form'] = self.form
         return context
 
+    def get_queryset(self):
+        return Topic.objects.annotate(cnt=Count('comment'))
+
 
 class CommentView(ListView):
     model = Comment
     template_name = 'forum/comments.html'
     context_object_name = 'comments'
     allow_empty = True
-    # paginate_by = 10
+    paginate_by = 10
     form = CommForm()
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -40,20 +44,24 @@ class CommentView(ListView):
 
 
 def popular(request):
-    all_topics = Topic.objects.annotate(cnt=Count('comment')).order_by('-cnt').filter(cnt__gt=1)
-    return render(request, 'forum/popular.html', {'pop': all_topics, })
+    pop_topics = Topic.objects.annotate(cnt=Count('comment')).order_by('-cnt').filter(cnt__gt=1)
+    return render(request, 'forum/popular.html', {'pop_topics': pop_topics, })
 
 
 def users_topics(request):
-    topics = set(Topic.objects.filter(comment__author=request.user))
+    topics = Topic.objects.filter(comment__author=request.user).annotate(cnt=Count('comment'))
     return render(request, 'forum/users_topic.html', {'topics': topics, })
 
 
 def add_comment(request, topic_pk):
     if request.method == 'POST':
         com = Comment(topic=Topic.objects.get(pk=topic_pk), author=request.user, text=request.POST['text'])
+        com.text = com.text.replace(com.text[0], com.text[0].title(), 1)
+        if com.text[:-1] not in '.,?!:;()':
+            com.text += '.'
         com.save()
-        return redirect('comment_view', topic_pk)
+
+        return redirect('comment_view', topic_pk,)
     else:
         com = CommForm()
     return render(request, 'forum/comments.html', {'form': com, 'topic_pk': topic_pk})
@@ -76,8 +84,14 @@ def add_mute(request, comment_pk, topic_pk):
         com = Comment()
         com.author = request.user
         com.text_mutual = Comment.objects.get(pk=comment_pk)
+        com.text_mutual = com.text_mutual.replace(com.text_mutual[0], com.text_mutual[0].title(), 1)
+        if com.text_mutual[:-1] not in '.,?!:;()':
+            com.text_mutual += '.'
         com.topic = Topic.objects.get(pk=topic_pk)
         com.text = request.POST['text']
+        com.text = com.text.replace(com.text[0], com.text[0].title(), 1)
+        if com.text[:-1] not in '.,?!:;()':
+            com.text += '.'
         com.save()
         return redirect('comment_view', topic_pk)
     else:
@@ -95,7 +109,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('topic_view')
+            return redirect('main')
         else:
             messages.error(request, 'Произошла ошибка регистрации')
     else:
@@ -109,7 +123,7 @@ def user_login(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('topic_view')
+            return redirect('main')
     else:
         form = UserLoginForm()
     return render(request, 'forum/login.html', {'form': form})
@@ -117,4 +131,4 @@ def user_login(request):
 
 def user_logout(request):
     logout(request)
-    return redirect('topic_view')
+    return redirect('main')
