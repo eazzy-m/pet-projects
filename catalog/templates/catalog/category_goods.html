@@ -19,18 +19,14 @@ Category_goods
     </div>
     <div class="card-body">
         <div class="row">
-            <div class="col-md-4 ">
+            <div class="col-md-5 ">
                 {% if good.image %}
-                <img src="{{good.image.url}}" style="max-height:80px">
+                <img src="{{good.image.url}}" style="max-height:200px">
                 {% endif %}
             </div>
-            <div class="col-md-3 ">
-                <p class="card-text">Описание: </p><br><br>
-                <p class="card-text">Цена: </p>
-            </div>
-            <div class="col-md-5 ">
-                <p class="card-text">{{ good.about}}</p>
-                <p class="card-text">{{ good.price}} р ({{good.price_in_d }} $)</p>
+            <div class="col-md-7 ">
+                <p class="card-text" >Описание: {{ good.about}} </p>
+                <p class="card-text; row align-items-end">Цена: {{ good.price}} р ({{good.price_in_d }} $)</p>
             </div>
         </div>
     </div>
