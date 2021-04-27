@@ -49,7 +49,10 @@
                     <a class="nav-link active" aria-current="page" href="#">Барахолка</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Форум</a>
+                    <a class="nav-link active" aria-current="page" href="{% url 'topic_view' %}">Форум</a>
+                </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Погода</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#"
@@ -67,6 +70,19 @@
                 <li class="nav-item">
                     <a class="nav-link" href="" >$<span class="badge-pill badge-danger">{% show_top_menu %}</span></a>
                 </li>
+
+                {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}" >Выход</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'register' %}" >Регистрация</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}" >Авторизация</a>
+                </li>
+                {% endif %}
             </ul>
             <form class="d-flex">
                 <input class="form-control me-2" type="search" placeholder="поиск" aria-label="Search">
