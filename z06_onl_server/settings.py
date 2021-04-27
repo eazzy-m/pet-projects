@@ -79,18 +79,18 @@ WSGI_APPLICATION = 'z06_onl_server.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 
-# DATABASES = {
-#     'default': {
-#         'HOST': 'ec2-35-174-35-242.compute-1.amazonaws.com',
-#         'DATABASE': 'dbae3eo0dqor6s',
-#         'USER': 'tndyqlemglyvuh',
-#         'PORT': 5432,
-#         'PASSWORD': 'c044d07775169b8728949c2cd47d22334b69c2ed1c0e9c4b5fe5e3fc30dc7840',
-#         'URI': 'postgres://tndyqlemglyvuh:c044d07775169b8728949c2cd47d22334b69c2ed1c0e9c4b5fe5e3fc30dc7840@ec2-35-174-35-242.compute-1.amazonaws.com:5432/dbae3eo0dqor6s',
-#         'Heroku CLI': 'heroku pg:psql postgresql-asymmetrical-76441 --app morning-badlands-25917',
-#
-#     }
-# }
+DATABASES = {
+    'default': {
+        'HOST': 'ec2-35-174-35-242.compute-1.amazonaws.com',
+        'DATABASE': 'dbae3eo0dqor6s',
+        'USER': 'tndyqlemglyvuh',
+        'PORT': 5432,
+        'PASSWORD': 'c044d07775169b8728949c2cd47d22334b69c2ed1c0e9c4b5fe5e3fc30dc7840',
+        'URI': 'postgres://tndyqlemglyvuh:c044d07775169b8728949c2cd47d22334b69c2ed1c0e9c4b5fe5e3fc30dc7840@ec2-35-174-35-242.compute-1.amazonaws.com:5432/dbae3eo0dqor6s',
+        'Heroku CLI': 'heroku pg:psql postgresql-asymmetrical-76441 --app morning-badlands-25917',
+
+    }
+}
 
 # DATABASES = {
 #     'default': {
@@ -105,12 +105,12 @@ WSGI_APPLICATION = 'z06_onl_server.wsgi.application'
 
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
