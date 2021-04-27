@@ -1,12 +1,12 @@
 {% extends 'forum/base_forum.html' %}
-{% load comments_tags %}
+
 {% block title %}
 Login
 {% endblock %}
 
 
 {% block content %}
-<a href="{% url 'topic_view' %}">На главную</a><br>
+<a href="{% url 'main' %}">На главную</a><br>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}

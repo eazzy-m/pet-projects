@@ -1,7 +1,0 @@
-
-{% for topic in topics %}
-    <div>
-    {{ topic.title }} <a href="{{ topic.get_absolute_url }}">Обсудить</a> Количество комментариев--->|{{ topic.cnt }}|<br>
-        <hr />
-    </div>
-{% endfor %}
