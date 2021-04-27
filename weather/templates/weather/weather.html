@@ -20,7 +20,7 @@ Weather
 {% else %}
 
 {% endif %}
-
+<div style="width: 50rem; margin-left: 30px">
 <form action="{% url 'index' %}" method="post">
     {% csrf_token %}
     <div class="form-group">
@@ -29,4 +29,5 @@ Weather
     </div>
     <input type="submit" value="submit">
 </form>
+</div>
 {% endblock %}
