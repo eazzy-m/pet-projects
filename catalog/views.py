@@ -110,7 +110,7 @@ def category_first(request):
                                                      slug='electronics').category_second.all()
     if CategoryFirst.objects.get_or_create(name='Компьютеры и сети', slug='computers_networks')[1]:
         categorycomp = CategoryFirst.objects.get(name='Компьютеры и сети', slug='computers_networks')
-        laptops_computers_monitors = CategorySecond.objects.create(name='Ноутбуки, компьютеры, моноторы',
+        laptops_computers_monitors = CategorySecond.objects.create(name='Ноутбуки, компьютеры, мониторы',
                                                                    slug='laptops_computers_monitors',
                                                                    cat_second_cat_first=categorycomp)
         components = CategorySecond.objects.create(name='Комплектующие', slug='components',
