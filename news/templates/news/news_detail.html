@@ -1,0 +1,40 @@
+{% extends 'news/base_news.html' %}
+{% block content %}
+{% if user %}
+<button><a style="transform-origin: right" href="{% url 'news_edit' news_id=news.id %}">Изменить новость</a></button>
+<button><a style="transform-origin: right" href="{% url 'news_delete' news_id=news.id %}">Удалить новость</a></button>
+{% endif %}
+<div class="column2">
+    <h1>{{ news.title }}</h1>
+    <div style="margin-left: -28px"> <img src="{{ news.image.url }}" width="900" height="500"><br></div>
+    <div style="margin-left: -28px" class="imgtext imgtextback">
+        <i class="fa fa-eye"></i>{{news.views}}&nbsp;&nbsp;
+        <i class="fa fa-comment"></i>{{news.count}}
+        &nbsp;&nbsp;{{news.created_date}} &nbsp;&nbsp;
+        <a style="color: white" href="{{ news.category.get_absolute_url }}">{{news.category.name}}</a><br>
+    </div>
+    <p></p><div class="news_detail_text"> {{news.text}}<br></div></p>
+    <hr style="margin-left: -28px">
+    <div class="tab"><p><h2>Коммантарии</h2></p></div>
+    <p>{% for com in comments %}</p>
+        {{com.author}}&nbsp;&nbsp;<br>
+        {{com.text}}<br>
+        <a alink="#0f0f0f" href="{% url 'comments_like' news_id=news.id com_id=com.id %}"><i class="fa fa-thumbs-up"></i></a>{{com.like}}&nbsp;
+        <a alink="#0f0f0f" href="{% url 'comments_dislike' news_id=news.id com_id=com.id %}"><i class="fa fa-thumbs-down"></i></a> {{com.dislike}}&nbsp; &nbsp;
+
+
+        {% if com.author.is_authenticated %}
+        <a href="{% url 'com_delete' news_id=news.id com_id=com.id %}">Удалить</a>
+        {% endif %}
+    <hr>
+    {% endfor %}
+<div>
+        <h3>Ваш комментарий:</h3>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="save btn btn-default">Отправить</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
