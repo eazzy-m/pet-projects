@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.db.models import Count
 
+
 class TopicViews(ListView):
     model = Topic
     context_object_name = 'topics'
@@ -95,7 +96,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('topic_view')
+            return redirect('main')
         else:
             messages.error(request, 'Произошла ошибка регистрации')
     else:
@@ -109,7 +110,7 @@ def user_login(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('topic_view')
+            return redirect('main')
     else:
         form = UserLoginForm()
     return render(request, 'forum/login.html', {'form': form})
@@ -117,4 +118,4 @@ def user_login(request):
 
 def user_logout(request):
     logout(request)
-    return redirect('topic_view')
+    return redirect('main')
