@@ -80,9 +80,9 @@
         position: absolute;
         background: rgba(43, 47, 43, 0.7); /* Black background with transparency */
         color: #f1f1f1;
-        top: 140px;
+        top: 120px;
         width: 305px;
-        height: 50px;
+        height: 70px;
         left: 5px;
         right: 100px;
         filter: contrast(100%);
@@ -152,13 +152,13 @@
         </div>
 </div>
 {% endif %}
-<div class="body">
+<div >
     <div style="padding-left: 30px">
         {% for nbw in news_by_views %}
-        <div class="column_rating" >
+        <div class="column_rating"  style="padding-top: 5px" >
             <img  style="filter: contrast(70%)" src="{{ nbw.image.url }}" width="310" height="200">
             <div class="imgtext_rating">
-                <a style="color: white" href="{{ nbw.get_absolute_url }}">{{nbw.title}}</a><br>
+                <a style="color: white" href="{{ nbw.get_absolute_url }}">{{nbw.title|truncatewords:6}}</a><br>
                 <i class="fa fa-eye"></i>{{nbw.views}}&nbsp;&nbsp;
                 <i class="fa fa-comment"></i>{{nbw.count}}
                 &nbsp;&nbsp;{{nbw.created_date}} &nbsp;&nbsp;
