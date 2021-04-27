@@ -1,40 +1,210 @@
 {% extends 'news/base_news.html' %}
 {% block content %}
-{% if user %}
-<button><a style="transform-origin: right" href="{% url 'news_edit' news_id=news.id %}">Изменить новость</a></button>
-<button><a style="transform-origin: right" href="{% url 'news_delete' news_id=news.id %}">Удалить новость</a></button>
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<style>
+
+    .tab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+    }
+
+    .tab button {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        transition: 0.3s;
+        font-size: 17px;
+    }
+
+    .tab button:hover {
+        background-color: #787171;
+    }
+
+    .tab button.active {
+        background-color: #9a9292;
+    }
+
+    a {
+        text-decoration: none;
+        text-align: justify;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+
+    .column img {
+        opacity: 0.9;
+        cursor: pointer;
+    }
+
+    .column img:hover {
+        opacity: 5;
+    }
+
+    .imgtext {
+        position: fixed;
+        top: 530px;
+        left: 15px;
+        color: white;
+        font-size: 20px;
+    }
+
+    .imgtextback {
+        position: absolute;
+        bottom: 955px;
+        background: rgba(43, 47, 43, 0.7); /* Black background with transparency */
+        color: #f1f1f1;
+        width: 900px;
+        height: 30px;
+        left: 10px;
+    }
+
+
+    .column {
+        padding-left: 10px;
+        filter: contrast(80%);
+        margin: 19px;
+
+    }
+
+
+    .column2 {
+        padding-left: 10px;
+        padding-right: 20px;
+        height: 200px;
+        width: 900px;
+
+    }
+
+    .news_detail_text {
+        font-size: 20px;
+        font-family: serif;
+        width: 900px;
+    }
+
+    .post-form textarea, .post-form input {
+        width: 100%;
+    }
+
+    .dropbtn {
+        background-color: #626662;
+        color: white;
+        padding: 16px;
+        font-size: 16px;
+        border: none;
+    }
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f1f1f1;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+    }
+
+    .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+    .dropdown-content a:hover {background-color: #ddd;}
+    .dropdown:hover .dropdown-content {display: block;}
+    .dropdown:hover .dropbtn {background-color: #8b8888;}
+</style>
+
+<head>
+    <title>Новости</title>
+</head>
+<div class="tab">
+    {% for c in cats %}
+    {% if c.id == cat_selected %}
+    <button class="tab button.active">{{c.name}}</button>
+    {% else %}
+    <button class="active"><a href="{{ c.get_absolute_url }}" alink="#0f0f0f" style="color: #0c142f">{{c.name}}</a>
+    </button>
+    {% endif %}
+    {% endfor %}
+</div>
+
+{% if request.user.is_superuser %}
+<div class="dropdown">
+    <button class="dropbtn" >Редактор</button>
+    <div class="dropdown-content">
+        {% for c in cats %}
+        {% if c.id == cat_selected %}
+        <a href="{% url 'category_delete' cat_id=c.id %}">Удалить категорию</a>
+        {% endif %}
+        {% endfor %}
+        <a href="{% url 'news_add' %}">Добавить новость</a>
+        <a href="{% url 'category_add' %}">Добавить категорию</a>
+        {% if request.user.is_superuser %}
+        <a href="{% url 'news_edit' news_id=news.id %}">Изменить новость</a>
+        <a href="{% url 'news_delete' news_id=news.id %}">Удалить новость</a>
+        {% endif %}
+    </div>
+</div>
 {% endif %}
-<div class="column2">
+
+
+<div class="column">
     <h1>{{ news.title }}</h1>
-    <div style="margin-left: -28px"> <img src="{{ news.image.url }}" width="900" height="500"><br></div>
+    <div style="margin-left: -28px"><img src="{{ news.image.url }}" width="900" height="500"><br></div>
     <div style="margin-left: -28px" class="imgtext imgtextback">
         <i class="fa fa-eye"></i>{{news.views}}&nbsp;&nbsp;
         <i class="fa fa-comment"></i>{{news.count}}
         &nbsp;&nbsp;{{news.created_date}} &nbsp;&nbsp;
         <a style="color: white" href="{{ news.category.get_absolute_url }}">{{news.category.name}}</a><br>
     </div>
-    <p></p><div class="news_detail_text"> {{news.text}}<br></div></p>
+    <p></p>
+    <div style="padding-top: 20px" class="news_detail_text"> {{news.text}}<br></div>
+    </p>
     <hr style="margin-left: -28px">
-    <div class="tab"><p><h2>Коммантарии</h2></p></div>
-    <p>{% for com in comments %}</p>
+
+    <div class="column2">
+        <div class="tab"><p>
+            <h2>Коммeнтарии</h2></p></div>
+        <p>{% for com in comments %}</p>
         {{com.author}}&nbsp;&nbsp;<br>
-        {{com.text}}<br>
-        <a alink="#0f0f0f" href="{% url 'comments_like' news_id=news.id com_id=com.id %}"><i class="fa fa-thumbs-up"></i></a>{{com.like}}&nbsp;
-        <a alink="#0f0f0f" href="{% url 'comments_dislike' news_id=news.id com_id=com.id %}"><i class="fa fa-thumbs-down"></i></a> {{com.dislike}}&nbsp; &nbsp;
-
-
-        {% if com.author.is_authenticated %}
+        <div class="column2_text ">{{com.text}}<br></div>
+        <a alink="#0f0f0f" href="{% url 'comments_like' news_id=news.id com_id=com.id %}"><i
+                class="fa fa-thumbs-up"></i></a>{{com.like}}&nbsp;
+        <a alink="#0f0f0f" href="{% url 'comments_dislike' news_id=news.id com_id=com.id %}"><i
+                class="fa fa-thumbs-down"></i></a> {{com.dislike}}&nbsp; &nbsp;
+        {% if request.user.is_superuser %}
         <a href="{% url 'com_delete' news_id=news.id com_id=com.id %}">Удалить</a>
         {% endif %}
-    <hr>
-    {% endfor %}
-<div>
-        <h3>Ваш комментарий:</h3>
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button class="save btn btn-default">Отправить</button>
-        </form>
+        <hr>
+        {% endfor %}
+        {% if request.user.is_authenticated %}
+        <div style="padding-bottom: 50px">
+            <h3>Ваш комментарий:</h3>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button>Отправить</button>
+            </form>
+        {% else %}
+        Для комментирования вам необходимо авторизироваться <a href="">
+        <button>Авторизация</button>
+    </a><br>
+        Если вы не зарегистрированы, сделайте это! <a href="{% url 'register' %}">
+        <button>Регистрация</button>
+    </a><br>
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
