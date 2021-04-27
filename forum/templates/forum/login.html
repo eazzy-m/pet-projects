@@ -6,11 +6,13 @@ Login
 
 
 {% block content %}
-<a href="{% url 'main' %}">На главную</a><br>
+<a href="{% url 'main' %}" style="margin-left: 50px">На главную</a><br>
+<div style="width: 50rem; margin-left: 30px">
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
 
     <button type="submit">Авторизация</button>
 </form>
+</div>
 {% endblock %}
