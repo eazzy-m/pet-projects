@@ -53,10 +53,10 @@ class GoodDetailView(DetailView):
         # Добавляем новую переменную к контексту и инициализируем её некоторым значением
         context['some_data'] = {i.verbose_name.title().capitalize(): i.value_from_object(kwargs['object']) for i in
                                 self.model._meta.get_fields()[8:]}
-        if context['some_data']['Наличие на складе']:
-            context['some_data']['Наличие на складе'] = 'Да'
-        else:
-            context['some_data']['Наличие на складе'] = 'Нет'
+        # if context['some_data']['Наличие на складе']:
+        #     context['some_data']['Наличие на складе'] = 'Да'
+        # else:
+        #     context['some_data']['Наличие на складе'] = 'Нет'
         ct_model = kwargs['object'].product_category.slug
         good_slug = kwargs['object'].slug
         content_type = ContentType.objects.get(model=ct_model)
