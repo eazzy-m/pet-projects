@@ -73,7 +73,7 @@
 
                 {% if request.user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link"  style="text-decoration: none; color: #f5f1f1"> Добро пожаловать   {{ request.user }}</a>
+                    <a class="nav-link"  style="text-decoration: none; color: #212529"> Добро пожаловать   {{ request.user }}</a>
                  </li>
                 <li class="nav-item">
                      <a class="nav-link" href="{% url 'logout' %}" >Выход</a>

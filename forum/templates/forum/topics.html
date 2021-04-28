@@ -3,19 +3,29 @@
 
 {% block content %}
 
-{% if user.is_authenticated %}
-<a href="{% url 'add_topic' %}">Хотите добавить тему для обсуждения?</a>
-<a href="{% url 'users_topic' %}">Посмотреть темы, в которых я участвую</a>
-{% else %}
-Для комментирования записей, вам необходимо авторизироваться <a href="{% url 'login' %}"><button>Авторизация</button></a>Если вы не зарегистрированы, сделайте это! <a href="{% url 'register' %}"><button>Регистрация</button></a><br>
 
+
+{% if user.is_authenticated %}
+<a style="margin-left: 20px" href="{% url 'add_topic' %}">
+    <span style="color:orange" class="badge badge-primary badge-pill ">Хотите добавить тему для обсуждения?</span></a>
+<a style="margin-left: 20px" href="{% url 'users_topic' %}">
+    <span style="color:orange" class="badge badge-primary badge-pill ">Посмотреть темы, в которых я участвую</span></a>
+<a style="margin-left: 20px" href="{% url 'popular' %}">
+    <span style="color:orange" class="badge badge-primary badge-pill ">Популярные темы</span></a>
+{% else %}
+<div style="margin-left: 20px; margin-right: 20px">
+Для комментирования записей, вам необходимо авторизироваться <a href="{% url 'login' %}">
+    <span style="color:orange" class="badge badge-primary badge-pill ">Авторизация</span></a>
+Если вы не зарегистрированы, сделайте это! <a href="{% url 'register' %}">
+    <span style="color:orange" class="badge badge-primary badge-pill ">Регистрация</span></a>
+</div>
 {% endif %}
 
-<a href="{% url 'popular' %}">Популярные темы</a>
-<hr>
 {% for topic in topics %}
-    <div>
-    {{ topic.title }} <a href="{{ topic.get_absolute_url }}">Обсудить</a>
+    <div style="margin-left: 20px; margin-right: 20px">
+        <hr />
+    {{ topic.title }} <a href="{{ topic.get_absolute_url }}">
+        <span style="color:orange" class="badge badge-primary badge-pill ">Обсудить</span></a>
         Комментариев: <span style="color:orange" class="badge badge-primary badge-pill ">{{ topic.cnt }}</span>
         <hr />
     </div>

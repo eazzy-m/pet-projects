@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'news',
     'weather',
+    'captcha'
 
 ]
 
@@ -162,3 +163,7 @@ STATICFILES_DIRS = (
 )
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+
+CAPTCHA_LETTER_ROTATION = None
+CAPTCHA_IMAGE_SIZE = (100, 35)

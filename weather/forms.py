@@ -4,4 +4,6 @@ import re
 
 
 class WeatherForm(forms.Form):
-    name = forms.CharField(label='Название города', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    name = forms.CharField(label='Название города',
+                           widget=forms.TextInput(attrs={'class': 'form-control',
+                                                         'placeholder': 'Где вы хотите узнать погоду?'}))
