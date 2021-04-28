@@ -6,17 +6,27 @@ Popular
 
 
 {% block content %}
-<a href="{% url 'topic_view' %}">На главную форума</a><br>
+<a style="margin-left: 20px" href="{% url 'topic_view' %}">
+    <span style="color:orange" class="badge badge-primary badge-pill ">На главную форума</span></a>
 
-<hr>
+
+{% if user.is_authenticated %}
 
 {% for pop_topic in pop_topics %}
-
-{{ pop_topic.title }}<a href="{{ pops.get_absolute_url }}">Обсудить</a>
+<div style="margin-left: 20px; margin-right: 20px">
+    <hr />
+{{ pop_topic.title }} <a href="{{ pop_topic.get_absolute_url }}">
+    <span style="color:orange" class="badge badge-primary badge-pill ">Обсудить</span></a>
 Комментариев: <span style="color:orange" class="badge badge-primary badge-pill ">{{ pop_topic.cnt }}</span>
-<hr />
 
+<hr />
+</div>
 {% endfor %}
+{% else %}
+Для комментирования записей, вам необходимо авторизироваться <a href="{% url 'login' %}"><button type="submit" class="btn btn-primary">Авторизация</button></a>
+Если вы не зарегистрированы, сделайте это! <a href="{% url 'register' %}"><button type="submit" class="btn btn-primary">Регистрация</button></a><br>
+
+    {% endif %}
 
 {% if page_obj.has_other_pages %}
 <nav aria-label="...">

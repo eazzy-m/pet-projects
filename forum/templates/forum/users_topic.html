@@ -6,14 +6,17 @@ Users topics
 
 
 {% block content %}
-<a href="{% url 'topic_view' %}">На главную форума</a><br>
-<hr>
-{%for topic in topics%}
+<a style="margin-left: 20px" href="{% url 'topic_view' %}">
+    <span style="color:orange" class="badge badge-primary badge-pill ">На главную форума</span></a><br>
 
-{{ topic.title }}<a href="{{ topic.get_absolute_url }}">Обсудить</a>
+{%for topic in topics%}
+<div style="margin-left: 20px; margin-right: 20px">
+<hr/>
+{{ topic.title }}<a href="{{ topic.get_absolute_url }}">
+    <span style="color:orange" class="badge badge-primary badge-pill ">Обсудить</span></a>
 Моих коментариев: <span style="color:orange" class="badge badge-primary badge-pill ">{{ topic.cnt }}</span>
 <hr />
-
+</div>
 {%endfor%}
 
 {% if page_obj.has_other_pages %}

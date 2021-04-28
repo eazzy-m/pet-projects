@@ -7,38 +7,47 @@ Comments
 
 
 {% block content %}
-<a href="{% url 'topic_view' %}">На главную форума</a>
-<hr>
+<a style="margin-left: 20px" href="{% url 'topic_view' %}">
+    <span style="color:orange" class="badge badge-primary badge-pill ">На главную форума</span></a>
+
+{% if user.is_authenticated %}
+{% else %}
+<div style="margin-left: 20px; margin-right: 20px">
+Для комментирования записей, вам необходимо авторизироваться <a href="{% url 'login' %}">
+    <span style="color:orange" class="badge badge-primary badge-pill ">Авторизация</span></a>
+Если вы не зарегистрированы, сделайте это! <a href="{% url 'register' %}">
+    <span style="color:orange" class="badge badge-primary badge-pill ">Регистрация</span></a>
+</div>
+{% endif %}
 
 {% for comment in comments %}
-    <div>
-    <h3>Автор: {{ comment.author }}</h3>
+
+    <div style="margin-left: 20px; margin-right: 20px">
+        <hr />
+    <p>Автор: {{ comment.author }}</p>
         {% if comment.text_mutual %}
-        <h4>Комментарий к комментарию:</h4> <b>{{ comment.text_mutual }}</b>
+        <p>Комментарий к комментарию: <b>{{ comment.text_mutual }}</b></p>
 
         {% endif %}
-         <h4>Текст:</h4>{{ comment.text }}<br>
-        <p>
-        <h5>Дата публикации: {{ comment.created_at|date:"Y-m-d H:i" }}</h5>
-        </p>
-<a href="{% url 'add_mute' comment_pk=comment.pk topic_pk=topic_pk %}">Комментировать</a>
+         <p>Текст: {{ comment.text }}</p>
+        <p>Дата публикации: {{ comment.created_at|date:"Y-m-d H:i" }}</p>
+<a href="{% url 'add_mute' comment_pk=comment.pk topic_pk=topic_pk %}">
+    <span style="color:orange" class="badge badge-primary badge-pill ">Комментировать</span></a>
         <hr />
     </div>
 {% endfor %}
 
 {% if user.is_authenticated %}
 
+<div style="width: 50rem; margin-left: 20px; margin-top: 5px">
 <form action="{% url 'add_comment' topic_pk=topic_pk  %}" method="post">
     {% csrf_token %}
     {{ form.text }}
 
-    <input type="submit" value="Добавить новый комментарий">
+    <button type="submit" class="btn btn-warning">Добавить новый комментарий</button>
 </form>
+</div>
 
-{% else %}
-
-Для комментирования записей, вам необходимо авторизироваться <a href=""><button>Авторизация</button></a>
-Если вы не зарегистрированы, сделайте это! <a href="{% url 'register' %}"><button>Регистрация</button></a><br>
 {% endif %}
 
 {% if page_obj.has_other_pages %}

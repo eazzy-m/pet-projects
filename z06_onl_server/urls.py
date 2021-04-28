@@ -10,6 +10,7 @@ urlpatterns = [
     path('news/', include('news.urls')),
     path('weather/', include('weather.urls')),
     path('forum/', include('forum.urls')),
+    path('captcha/', include('captcha.urls'))
 
 ]
 

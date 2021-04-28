@@ -21,7 +21,7 @@ class TopicViews(ListView):
         return context
 
     def get_queryset(self):
-        return Topic.objects.annotate(cnt=Count('comment'))
+        return Topic.objects.annotate(cnt=Count('comment')).order_by('-pk')
 
 
 class CommentView(ListView):
@@ -57,8 +57,6 @@ def add_comment(request, topic_pk):
     if request.method == 'POST':
         com = Comment(topic=Topic.objects.get(pk=topic_pk), author=request.user, text=request.POST['text'])
         com.text = com.text.replace(com.text[0], com.text[0].title(), 1)
-        if com.text[:-1] not in '.,?!:;()':
-            com.text += '.'
         com.save()
 
         return redirect('comment_view', topic_pk,)
@@ -84,14 +82,9 @@ def add_mute(request, comment_pk, topic_pk):
         com = Comment()
         com.author = request.user
         com.text_mutual = Comment.objects.get(pk=comment_pk)
-        com.text_mutual = com.text_mutual.replace(com.text_mutual[0], com.text_mutual[0].title(), 1)
-        if com.text_mutual[:-1] not in '.,?!:;()':
-            com.text_mutual += '.'
         com.topic = Topic.objects.get(pk=topic_pk)
         com.text = request.POST['text']
         com.text = com.text.replace(com.text[0], com.text[0].title(), 1)
-        if com.text[:-1] not in '.,?!:;()':
-            com.text += '.'
         com.save()
         return redirect('comment_view', topic_pk)
     else:
